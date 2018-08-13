@@ -14,7 +14,8 @@ def __split_data(data):
     hypnogram_data = data[1:]
     return title, hypnogram_data
 
-def aasm_stages(path):
+
+def load(path):
     hypnogram = __load_data_from_file(path)
     filtered = __filter_data(hypnogram)
     title, hypnogram_data = __split_data(filtered)
