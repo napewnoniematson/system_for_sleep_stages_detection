@@ -1,9 +1,9 @@
 PHYSIONET_PHYSIOBANK_DATABASE_SLEEP_EDFX = "D:\\Studia\\WEEIA\\mgr\\Sezon X\\mgr\\Dane\\dat3\\SC4002E0-PSG.edf"
 PHYSIONET_PHYSIOBANK_DATABASE_SHHPSGDB = "D:\\Studia\\WEEIA\\mgr\\Sezon X\\mgr\\Dane\\dat2\\0000.edf"
-UNIVERSITE_DE_MONS = "D:\\Studia\\WEEIA\\mgr\\Sezon X\\mgr\\Dane\\dat1\\subject{}.edf".format
-PHYSIONET_PHYSIOBANK_DATABASE_HYPNOGRAM_AASM =\
+UNIVERSITE_DE_MONS = "D:\\Studia\\WEEIA\\mgr\\Sezon X\\mgr\\Dane\\dat1\\subject{}.edf"
+UNIVERSITE_DE_MONS_HYPNOGRAM_AASM =\
     "D:\\Studia\\WEEIA\\mgr\\Sezon X\\mgr\\Dane\\dat1\\HypnogramAASM_subject{}.txt"
-PHYSIONET_PHYSIOBANK_DATABASE_HYPNOGRAM_RK =\
+UNIVERSITE_DE_MONS_HYPNOGRAM_RK =\
     "D:\\Studia\\WEEIA\\mgr\\Sezon X\\mgr\\Dane\\dat1\\HypnogramR&K_subject{}.txt"
 
 FEATURE_NAME = "eeg_features"
