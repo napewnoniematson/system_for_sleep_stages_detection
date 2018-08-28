@@ -1,6 +1,7 @@
-import pyedflib
 import numpy as np
-from src.loader.universite_de_mons_data.edf.util import *
+import pyedflib
+
+from src.utils.util import *
 
 
 class EEG:
