@@ -36,3 +36,7 @@ class EEG:
 
     def load_cz2_a1(self):
         return self.__edf.__eeg_signals[EEG_CZ2_A1_NO]
+
+    # Wszystkie sygnały EEG mają tą samą częstotliwość - 200 Hz
+    def load_eeg_frequency(self):
+        return self.__edf.getSampleFrequency(EEG_FPI_A2_NO)
