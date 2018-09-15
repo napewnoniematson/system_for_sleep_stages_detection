@@ -6,7 +6,7 @@ def __load_data_from_file(path):
     data = []
     try:
         logger.info(RK_LOAD_START_INFO)
-        with open(path+"s", "r") as file:
+        with open(path, "r") as file:
             data = file.readlines()
             logger.info(RK_LOAD_END_INFO)
     except FileNotFoundError:

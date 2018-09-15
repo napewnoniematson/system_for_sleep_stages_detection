@@ -20,3 +20,8 @@ RK_LOAD_ERROR = "Loading RK hypnogram data ended unsuccessfully."
 RK_PREPARE_DATA_START_INFO = "Preparing RK hypnogram data started"
 RK_PREPARE_DATA_END_INFO = "Preparing RK hypnogram data ended successfully"
 RK_PREPARE_DATA_END_WARNING = "Preparing RK hypnogram data ended unsuccessfully. Empty data"
+
+BUTTERWORTH_FILTER_START = "BUTTERWORTH FILTRATION STARTED"
+BUTTERWORTH_DATA_INFO = "lower cutoff frequency = {} | upper cutoff frequency = {} " \
+                        "| sampling frequency = {} | order of filter = {} "
+BUTTERWORTH_FILTER_END = "BUTTERWORTH FILTRATION ENDED"
