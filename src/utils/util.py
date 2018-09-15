@@ -6,6 +6,8 @@ UNIVERSITE_DE_MONS_HYPNOGRAM_AASM =\
 UNIVERSITE_DE_MONS_HYPNOGRAM_RK =\
     "D:\\Studia\\WEEIA\\mgr\\Sezon X\\mgr\\Dane\\dat1\\HypnogramR&K_subject{}.txt"
 
+
+# AI
 FEATURE_NAME = "eeg_features"
 TRAINING_FILE = "ml/training.csv"
 TEST_FILE = "ml/test.csv"

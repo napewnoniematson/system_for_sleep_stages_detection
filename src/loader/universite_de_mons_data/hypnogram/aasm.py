@@ -21,9 +21,9 @@ def load(path):
     title, hypnogram_data = __split_data(filtered)
     wake = []
     rem = []
-    n1 = []
-    n2 = []
-    n3 = []
+    s1 = []
+    s2 = []
+    s3 = []
     begin = 0
     for i in range(len(hypnogram_data) - 1):
         if hypnogram_data[i] != hypnogram_data[i + 1] or i + 1 == len(hypnogram_data) - 1:
@@ -33,10 +33,18 @@ def load(path):
             elif hypnogram_data[i] == '4':
                 rem.append([begin, end])
             elif hypnogram_data[i] == '3':
-                n1.append([begin, end])
+                s1.append([begin, end])
             elif hypnogram_data[i] == '2':
-                n2.append([begin, end])
+                s2.append([begin, end])
             elif hypnogram_data[i] == '1':
-                n3.append([begin, end])
+                s3.append([begin, end])
             begin = end + 1
-    return title, hypnogram_data, wake, rem, n1, n2, n3
+    return {
+        "title": title,
+        "data": hypnogram_data,
+        "wake": wake,
+        "rem": rem,
+        "s1": s1,
+        "s2": s2,
+        "s3": s3
+    }

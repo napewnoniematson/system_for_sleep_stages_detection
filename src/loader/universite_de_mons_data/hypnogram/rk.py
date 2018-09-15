@@ -42,4 +42,13 @@ def load(path):
             elif hypnogram_data[i] == '0':
                 s4.append([begin, end])
             begin = end+1
-    return title, hypnogram_data, wake, rem, s1, s2, s3, s4
+    return {
+        "title": title,
+        "data": hypnogram_data,
+        "wake": wake,
+        "rem": rem,
+        "s1": s1,
+        "s2": s2,
+        "s3": s3,
+        "s4": s4
+    }
