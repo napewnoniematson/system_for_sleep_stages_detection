@@ -9,7 +9,7 @@ import src.logger.logger as logger
 class EEG:
     def __init__(self, path):
         self.__path = path
-        self.__edf = self.__load_edf_data(path+"s")
+        self.__edf = self.__load_edf_data(path)
         self.__eeg_signals = self.__load_all_eeg()
 
     def __load_edf_data(self, path):

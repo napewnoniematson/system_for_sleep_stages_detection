@@ -10,7 +10,6 @@ class Controller:
     def __init__(self):
         self.examination = Examination(self.SUBJECT_NO)
         self.fpi_a2 = self.examination.eeg.load_fpi_a2()
-        x = self.examination.eeg.load_cz2_a1()
 
     def run(self):
         plt.plot(self.examination.hypnogram["data"])
