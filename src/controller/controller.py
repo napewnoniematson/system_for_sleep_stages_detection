@@ -1,6 +1,6 @@
 import matplotlib.pyplot as plt
 
-from src.model.universite_de_mons_data.examination import Examination, Option
+from src.model.universite_de_mons_data.examination import Examination, HypnogramType
 from src.utils.util import *
 
 
