@@ -11,7 +11,3 @@ def warning(message):
 
 def error(message):
     print(colors.BOLD + colors.RED + type.ERROR + colors.DISABLE + message)
-
-
-def header(message):
-    print(colors.BOLD + colors.MAGENTA + type.WARNING + colors.DISABLE + message)
