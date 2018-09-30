@@ -26,7 +26,7 @@ class Model:
         self.model.add(tf.keras.layers.Flatten(input_shape=input_shape))
         self.model.add(tf.keras.layers.Dense(128, activation=tf.nn.relu))
         self.model.add(tf.keras.layers.Dense(128, activation=tf.nn.relu))
-        self.model.add(tf.keras.layers.Dense(10, activation=tf.nn.softmax))
+        self.model.add(tf.keras.layers.Dense(5, activation=tf.nn.softmax))
 
     def __compile(self):
         self.model.compile(optimizer='adam',
@@ -34,7 +34,7 @@ class Model:
                            metrics=['accuracy'])
 
     def __train(self):
-        self.model.fit(self.features, self.labels, epochs=3)
+        self.model.fit(self.features, self.labels, epochs=15)
 
     def save(self):
         self.model.save(MODEL_FILE)
