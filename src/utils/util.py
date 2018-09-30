@@ -1,15 +1,14 @@
-PHYSIONET_PHYSIOBANK_DATABASE_SLEEP_EDFX = "D:\\Studia\\WEEIA\\mgr\\Sezon X\\mgr\\Dane\\dat3\\SC4002E0-PSG.edf"
-PHYSIONET_PHYSIOBANK_DATABASE_SHHPSGDB = "D:\\Studia\\WEEIA\\mgr\\Sezon X\\mgr\\Dane\\dat2\\0000.edf"
-UNIVERSITE_DE_MONS = "D:\\Studia\\WEEIA\\mgr\\Sezon X\\mgr\\Dane\\dat1\\subject{}.edf"
+PHYSIONET_PHYSIOBANK_DATABASE_SLEEP_EDFX = "/home/pc/mgr/mgr_data/SC4002E0-PSG.edf"
+PHYSIONET_PHYSIOBANK_DATABASE_SHHPSGDB = "/home/pc/mgr/mgr_data/0000.edf"
+UNIVERSITE_DE_MONS = "/home/pc/mgr/mgr_data/subject{}.edf"
 UNIVERSITE_DE_MONS_HYPNOGRAM_AASM = \
-    "D:\\Studia\\WEEIA\\mgr\\Sezon X\\mgr\\Dane\\dat1\\HypnogramAASM_subject{}.txt"
+    "/home/pc/mgr/mgr_data/HypnogramAASM_subject{}.txt"
 UNIVERSITE_DE_MONS_HYPNOGRAM_RK = \
-    "D:\\Studia\\WEEIA\\mgr\\Sezon X\\mgr\\Dane\\dat1\\HypnogramR&K_subject{}.txt"
+    "/home/pc/mgr/mgr_data/HypnogramR&K_subject{}.txt"
 
 # AI
 FEATURE_NAME = "eeg_features"
-TRAINING_FILE = "ml/training.csv"
-TEST_FILE = "ml/test.csv"
+MODEL_FILE = "sleep_stages.model"
 
 # ***********************LOAD_EDF************************
 # ECG
