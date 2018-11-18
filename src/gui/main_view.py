@@ -1,8 +1,9 @@
 from tkinter import *
+from tkinter.ttk import Separator
 
 from src.utils.util import *
-from src.gui.train_choice_panel import TrainChoicePanel
-from src.gui.train_buttons_panel import TrainButtonsPanel
+from src.gui.train_panel import TrainPanel
+from src.gui.classify_panel import ClassifyPanel
 
 
 class MainView:
@@ -15,6 +16,10 @@ class MainView:
         # ROOT #
         self.root = root
         root.title(TITLE)
-        # TRAIN
-        TrainChoicePanel(root).pack(side=TOP)
-        TrainButtonsPanel(root).pack(side=TOP)
+        root.resizable(False, False)
+        # TRAIN #
+        TrainPanel(root).pack(side=LEFT, anchor=N)
+        # SEPARATOR #
+        Separator(root, orient=VERTICAL).pack(side=LEFT, anchor=N, fill=Y)
+        # CLASSIFY #
+        ClassifyPanel(root).pack(side=LEFT, anchor=N)
