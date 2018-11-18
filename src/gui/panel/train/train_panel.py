@@ -1,8 +1,7 @@
 from tkinter import *
 
-from src.utils.util import *
-from src.gui.train_choice_panel import TrainChoicePanel
-from src.gui.train_buttons_panel import TrainButtonsPanel
+from src.gui.panel.train.train_choice_panel import TrainChoicePanel
+from src.gui.panel.train.train_buttons_panel import TrainButtonsPanel
 
 
 class TrainPanel(Frame):

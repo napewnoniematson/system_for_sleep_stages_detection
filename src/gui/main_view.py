@@ -2,8 +2,8 @@ from tkinter import *
 from tkinter.ttk import Separator
 
 from src.utils.util import *
-from src.gui.train_panel import TrainPanel
-from src.gui.classify_panel import ClassifyPanel
+from src.gui.panel.train.train_panel import TrainPanel
+from src.gui.panel.classify_panel import ClassifyPanel
 
 
 class MainView:
