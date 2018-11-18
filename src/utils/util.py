@@ -1,3 +1,12 @@
+# GUI
+TITLE = "System for sleep stages detection"
+EXAMINATIONS_TEXT = "Examinations"
+FEATURES_TEXT = "Features"
+WINDOW_WIDTH_TEXT = "Window width"
+TRAINING_TEXT = "TRAIN"
+LOAD_MODEL_TEXT = "Load model"
+
+# PATHS
 PHYSIONET_PHYSIOBANK_DATABASE_SLEEP_EDFX = "/home/pc/mgr/mgr_data/SC4002E0-PSG.edf"
 PHYSIONET_PHYSIOBANK_DATABASE_SHHPSGDB = "/home/pc/mgr/mgr_data/0000.edf"
 UNIVERSITE_DE_MONS = "/home/pc/mgr/mgr_data/subject{}.edf"
