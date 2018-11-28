@@ -12,8 +12,12 @@ class ClassifyPanel(Frame):
         self.examinations_view = OneChoice(self, EXAMINATIONS_FOR_CLASSIFY_TEXT, self.controller.examinations)
         self.examinations_view.pack(side=TOP, anchor=W)
         self.classify_button = Button(self, text=CLASSIFY_BUTTON_TEXT,
-                                      command=self.controller.on_classify_button_click)
+                                      command=self.classify_callback)
         self.classify_button.pack(side=TOP, anchor=W)
 
+    def classify_callback(self):
+        examination = self.state()
+        self.controller.on_classify_button_click(examination)
+
     def state(self):
-        print(self.examinations_view.state())
+        return self.examinations_view.state()
