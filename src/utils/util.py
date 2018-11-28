@@ -8,6 +8,12 @@ SAVE_MODEL_TEXT = "Save model"
 LOAD_MODEL_TEXT = "Load model"
 EXAMINATIONS_FOR_CLASSIFY_TEXT = "Examination for classify"
 CLASSIFY_BUTTON_TEXT = "CLASSIFY"
+CONTROLLER_NOT_FOUND_EXCEPTION = "View's controller not found"
+
+# DICTIONARY_KEYS
+EXAMINATIONS_KEY = "examinations"
+FEATURES_KEY = "features"
+WINDOW_WIDTH_KEY = "window_width"
 
 # PATHS
 PHYSIONET_PHYSIOBANK_DATABASE_SLEEP_EDFX = "/home/pc/mgr/mgr_data/SC4002E0-PSG.edf"

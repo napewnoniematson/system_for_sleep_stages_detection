@@ -24,8 +24,8 @@ class Controller:
         f_test = []
         l_test = []
         for i in range(20):
-            print("START: ",i)
-            subject_nr = i+1
+            print("START: ", i)
+            subject_nr = i + 1
             self.examination = Examination(subject_nr)
             self.fpi_a2 = self.examination.eeg.load_fpi_a2()
 
@@ -77,4 +77,8 @@ class Controller:
         wyn = classifier.verify(f_test)
         print("wyn: {} | prawdziwy: {}".format(wyn, l_test[0]))
         stop = time.time()
-        print("***TIME***\n", stop-start)
+        print("***TIME***\n", stop - start)
+
+
+if __name__ == '__main__':
+    Controller().run()
