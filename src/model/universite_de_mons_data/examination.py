@@ -12,14 +12,14 @@ class HypnogramType(Enum):
 
 
 class Examination:
-    def __init__(self, subject_no, hypnogram_type=HypnogramType.AASM):
-        self.eeg = EEG(UNIVERSITE_DE_MONS.format(subject_no))
-        self.hypnogram = self.__load_hypnogram(subject_no, hypnogram_type)
+    def __init__(self, subject_title, hypnogram_type=HypnogramType.AASM):
+        self.eeg = EEG(UNIVERSITE_DE_MONS.format(subject_title))
+        self.hypnogram = self.__load_hypnogram(subject_title, hypnogram_type)
 
-    def __load_hypnogram(self, subject_no, hypnogram_type):
+    def __load_hypnogram(self, subject_title, hypnogram_type):
         hypnogram = []
         if hypnogram_type is HypnogramType.AASM:
-            hypnogram = aasm.load(UNIVERSITE_DE_MONS_HYPNOGRAM_AASM.format(subject_no))
+            hypnogram = aasm.load(UNIVERSITE_DE_MONS_HYPNOGRAM_AASM.format(subject_title))
         elif hypnogram_type is HypnogramType.RK:
-            hypnogram = rk.load(UNIVERSITE_DE_MONS_HYPNOGRAM_RK.format(subject_no))
+            hypnogram = rk.load(UNIVERSITE_DE_MONS_HYPNOGRAM_RK.format(subject_title))
         return hypnogram

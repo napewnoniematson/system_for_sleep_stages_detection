@@ -2,6 +2,9 @@ import math
 import statistics as stat
 import scipy.signal as signal
 
+from src.utils.util import *
+
+
 class Provider:
 
     def __init__(self, eeg, data_len):
@@ -39,16 +42,24 @@ def root_mean_square(samples):
     size = len(samples)
     sum_pow = 0
     for y in samples:
-        sum_pow += y*y
-    return math.sqrt(sum_pow/size)
+        sum_pow += y * y
+    return math.sqrt(sum_pow / size)
 
 
 def max_peak(samples):
-    max_val = 0
+    max_val = -3000
     for y in samples:
         if y > max_val:
             max_val = y
     return max_val
+
+
+def min_peak(samples):
+    min_val = 3000
+    for y in samples:
+        if y < min_val:
+            min_val = y
+    return min_val
 
 
 def mean(samples):
@@ -61,3 +72,17 @@ def variance(samples):
 
 def spectrogram(samples, sampling_freq):
     return signal.spectrogram(samples, fs=sampling_freq)
+
+
+def value(samples):
+    length = len(samples)
+    index = int(length / 2) + 1
+    return samples[index]
+
+
+def median(samples):
+    return stat.median(samples)
+
+
+def callbacks():
+    return [value, min_peak, max_peak, variance, spectrogram, mean, root_mean_square, median]

@@ -16,14 +16,17 @@ EXAMINATIONS_KEY = "examinations"
 FEATURES_KEY = "features"
 WINDOW_WIDTH_KEY = "window_width"
 
+FEATURES_TITLES_KEY = "titles"
+FEATURES_CALLBACKS_KEY = "callbacks"
+
 # PATHS
 PHYSIONET_PHYSIOBANK_DATABASE_SLEEP_EDFX = "/home/pc/mgr/mgr_data/SC4002E0-PSG.edf"
 PHYSIONET_PHYSIOBANK_DATABASE_SHHPSGDB = "/home/pc/mgr/mgr_data/0000.edf"
-UNIVERSITE_DE_MONS = "/home/pc/mgr/mgr_data/subject{}.edf"
+UNIVERSITE_DE_MONS = "/home/pc/mgr/mgr_data/{}.edf"
 UNIVERSITE_DE_MONS_HYPNOGRAM_AASM = \
-    "/home/pc/mgr/mgr_data/HypnogramAASM_subject{}.txt"
+    "/home/pc/mgr/mgr_data/HypnogramAASM_{}.txt"
 UNIVERSITE_DE_MONS_HYPNOGRAM_RK = \
-    "/home/pc/mgr/mgr_data/HypnogramR&K_subject{}.txt"
+    "/home/pc/mgr/mgr_data/HypnogramR&K_{}.txt"
 
 # AI
 FEATURE_NAME = "eeg_features"
