@@ -32,6 +32,7 @@ def __split_data(data):
     return title, hypnogram_data
 
 
+# todo minus 1 in length is really important? same issue in r&k
 def __prepare_data(hypnogram):
     logger.info(AASM_PREPARE_DATA_START_INFO)
     filtered = __filter_data(hypnogram)
