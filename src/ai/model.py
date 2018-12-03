@@ -3,13 +3,13 @@ from src.utils.util import *
 
 
 class Model:
-    def __init__(self, features_train, labels_train, has_normalization=False):
+    def __init__(self, features_train, labels_train, has_normalization=False, epochs=15):
         self.features = features_train
         self.labels = labels_train
         self.__normalize(is_on=has_normalization)
         self.__make()
         self.__compile()
-        self.__train()
+        self.__train(epochs=epochs)
 
     def __normalize(self, is_on=True):
         if is_on:
@@ -33,11 +33,15 @@ class Model:
                            loss='sparse_categorical_crossentropy',
                            metrics=['accuracy'])
 
-    def __train(self):
-        self.model.fit(self.features, self.labels, epochs=15)
+    def __train(self, epochs=15):
+        self.model.fit(self.features, self.labels, epochs)
 
-    def save(self):
-        self.model.save(MODEL_FILE)
+    def save(self, file=MODEL_FILE):
+        self.model.save(file)
 
     def load(self):
         self.model = tf.keras.models.load_model(MODEL_FILE)
+
+    @staticmethod
+    def loads(file=MODEL_FILE):
+        return tf.keras.models.load_model(file)
