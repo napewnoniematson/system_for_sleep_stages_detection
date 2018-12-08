@@ -27,6 +27,7 @@ class TrainController:
             checked_train_items[EXAMINATIONS_KEY],
             checked_train_items[FEATURES_KEY],
             checked_train_items[WINDOW_WIDTH_KEY]
+            # todo **kwargs for features callback functions
         )
         data_set = self._flatten_data_set(data_set)
         l_train, f_train, l_test, f_test = self._prepare_train_test_sets(data_set)
@@ -83,7 +84,7 @@ class TrainController:
             f_data.append(data[1])
         return l_data, f_data
 
-    def _prepare_data_set(self, examination_titles, features_callbacks, window_width):
+    def _prepare_data_set(self, examination_titles, features_callbacks, window_width, **kwargs):
         data_set = []
         for title in examination_titles:
             # load examination
@@ -93,7 +94,7 @@ class TrainController:
             stages = self._convert_indices_to_values(eeg, stages_indices)
             data_set.append(
                 self._prepare_data_set_for_one_examination(
-                    stages, features_callbacks, window_width
+                    stages, features_callbacks, window_width, **kwargs
                 )
             )
         return data_set
@@ -121,13 +122,13 @@ class TrainController:
 
     # todo stages_mode from radiobox
     def _prepare_data_set_for_one_examination(self, stages, features_callbacks, window_width=1,
-                                              stages_mode=StagesMode.REM_VS_NO_REM):
+                                              stages_mode=StagesMode.REM_VS_NO_REM, **kwargs):
         class_nos = self.stages_to_class_nos(stages, stages_mode)
         data_set = []
         for value, class_no in zip(stages.values(), class_nos):
             data_set.append(
                 self._prepare_data_set_for_one_stage(
-                    value, class_no, features_callbacks, window_width
+                    value, class_no, features_callbacks, window_width, **kwargs
                 )
             )
         return data_set
@@ -143,15 +144,15 @@ class TrainController:
             pass
         return class_nos
 
-    def _prepare_data_set_for_one_stage(self, stage, class_no, features_callbacks, window_width=1):
+    def _prepare_data_set_for_one_stage(self, stage, class_no, features_callbacks, window_width=1, **kwargs):
         calculated_features_set = []
         for samples in stage:
-            calculated_features = self._calculate_features(samples, features_callbacks, window_width)
+            calculated_features = self._calculate_features(samples, features_callbacks, window_width, **kwargs)
             calculated_features_set.append(calculated_features)
         data_set = [[(class_no, cf) for cf in calculated_features] for calculated_features in calculated_features_set]
         return data_set
 
-    def _calculate_features(self, samples, features_callbacks, window_width=1):
+    def _calculate_features(self, samples, features_callbacks, window_width=1, **kwargs):
         if window_width % 2 is 0:
             raise Exception(WINDOW_SIZE_EXCEPTION_MESSAGE)
         pre = int(window_width / 2)
@@ -163,14 +164,14 @@ class TrainController:
                 continue
             window_samples = samples[i - pre:i + post]
             calculated_features.append(
-                self._calculate_features_for_one_sample(window_samples, features_callbacks)
+                self._calculate_features_for_one_sample(window_samples, features_callbacks, **kwargs)
             )
         return calculated_features
 
-    def _calculate_features_for_one_sample(self, window_samples, features_callbacks):
+    def _calculate_features_for_one_sample(self, window_samples, features_callbacks, **kwargs):
         calculated_features = []
         for feature_callback in features_callbacks:
-            calculated_features.append(feature_callback(window_samples))
+            calculated_features.append(feature_callback(window_samples, **kwargs))
         return calculated_features
 
     def on_load_model_button_click(self):

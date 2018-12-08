@@ -19,6 +19,8 @@ WINDOW_WIDTH_KEY = "window_width"
 FEATURES_TITLES_KEY = "titles"
 FEATURES_CALLBACKS_KEY = "callbacks"
 
+SAMPLING_FREQ = 'sampling_freq'
+
 # EXCEPTION MESSAGES
 WINDOW_SIZE_EXCEPTION_MESSAGE = "Illegal window size exception"
 
