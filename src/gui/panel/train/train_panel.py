@@ -6,6 +6,7 @@ from src.gui.panel.train.train_buttons_panel import TrainButtonsPanel
 
 from src.utils.util import *
 
+
 class TrainPanel(Frame):
 
     def __init__(self, root, controller):

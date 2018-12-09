@@ -1,9 +1,12 @@
 # DEFAULTS
 from src.model.stage_mode import StageMode
+
 WINDOW_WIDTH_DEFAULT = 5
 STAGE_MODE_VALUE_DEFAULT = StageMode.REM_VS_NREM.value
 EPOCHS_DEFAULT = 15
 TRAINING_PART_PERCENTAGE_DEFAULT = 70
+SAMPLING_FREQ_DEFAULT = 200
+MODEL_NAME = 'model_{}'
 MODEL_NAME_DEFAULT = 'model_default_name'
 
 # GUI
@@ -29,6 +32,7 @@ CONTROLLER_NOT_FOUND_EXCEPTION = "View's controller not found"
 TRAINING_FINISHED_MESSAGE = 'Training is finished'
 LOADING_MODEL_FINISHED_MESSAGE = 'Loading is finished'
 SAVING_MODEL_FINISHED_MESSAGE = 'Saving is finished'
+UPDATING_RESULT_FINISHED_MESSAGE = 'Updating is finished'
 
 # DICTIONARY_KEYS
 EXAMINATIONS_KEY = "examinations"
@@ -57,8 +61,10 @@ UNIVERSITE_DE_MONS_HYPNOGRAM_RK = \
 
 # AI
 FEATURE_NAME = "eeg_features"
-MODEL_FILE = "sleep_stages.model"
+MODEL_FILE_EXTENSION = '.model'
+MODEL_FILE = MODEL_NAME_DEFAULT + MODEL_FILE_EXTENSION
 
+LOG_DATE_TIME_FORMAT = '%Y-%m-%d %H:%M:%S'
 # ***********************LOAD_EDF************************
 # ECG
 LOAD_EDF_ECG_NO = 0

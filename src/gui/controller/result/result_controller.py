@@ -1,7 +1,7 @@
 from src.logger import colors
 from src.utils.util import *
 
-
+# todo plot figure results
 class ResultController:
     def __init__(self, result=None):
         self.result = result

@@ -44,4 +44,4 @@ class Model:
 
     @staticmethod
     def loads(file=MODEL_FILE):
-        return tf.keras.models.load_model(file)
+        return file, tf.keras.models.load_model(file)

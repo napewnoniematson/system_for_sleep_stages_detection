@@ -1,3 +1,5 @@
+import datetime
+
 from src.utils.util import *
 import src.feature.provider as features
 from src.model.universite_de_mons_data.examination import Examination, HypnogramType
@@ -17,6 +19,7 @@ class TrainController:
         self.training_part_percentage = [('{}%'.format((i + 1) * 12.5), (i + 1) * 12.5) for i in range(7)]
         self.model = None
         self.classifier = None
+        self.model_name = None
         self.result = result
 
     def on_train_button_click(self, input_data):
@@ -39,7 +42,7 @@ class TrainController:
             checked_train_items[EXAMINATIONS_KEY],
             [f.__name__ for f in checked_train_items[FEATURES_KEY]],
             checked_train_items[WINDOW_WIDTH_KEY],
-            checked_train_items[STAGE_MODE_KEY],
+            StageMode(checked_train_items[STAGE_MODE_KEY]).name,
             checked_train_items[EPOCHS_KEY],
             checked_train_items[TRAINING_PART_KEY],
             "name",
@@ -207,9 +210,15 @@ class TrainController:
         return calculated_features
 
     def on_load_model_button_click(self):
-        self.model = Model.loads()
+        self.model_name, self.model = Model.loads()
         self.classifier = Classifier(self.model.model)
+        self.update_result(None, None, None, None, self.model_name, None)
 
     def on_save_model_button_click(self):
         if self.model:
-            self.model.save()
+            date = self.get_time()
+            self.model_name = MODEL_NAME.format(date) + MODEL_FILE_EXTENSION
+            self.model.save(file=self.model_name)
+
+    def get_time(self):
+        return datetime.datetime.now().strftime(LOG_DATE_TIME_FORMAT)

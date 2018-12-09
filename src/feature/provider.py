@@ -44,7 +44,7 @@ def spectrogram(samples, **kwargs):
     try:
         sampling_freq = kwargs[SAMPLING_FREQ]
     except KeyError:
-        sampling_freq = 200
+        sampling_freq = SAMPLING_FREQ_DEFAULT
     return signal.spectrogram(samples, fs=sampling_freq)
 
 

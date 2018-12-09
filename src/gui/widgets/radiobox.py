@@ -5,7 +5,7 @@ class Radiobox(Frame):
 
     def __init__(self, root=None, picks=[], side=TOP, anchor=W):
         Frame.__init__(self, root)
-        self.var = IntVar()
+        self.var = DoubleVar()
         selected = picks[0][1] if picks else -1
         self.var.set(selected)
         for text, value in picks:

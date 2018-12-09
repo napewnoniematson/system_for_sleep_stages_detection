@@ -3,9 +3,9 @@ class ClassifyController:
         self.examinations = [("subject{}".format(i), i) for i in range(20)]
         self.result = result
 
+    # todo classify
     def on_classify_button_click(self, input_data):
-        print(self.result.window_width)
-        print(self.result.stage_mode)
-        print(self.result.epochs)
+        pass
+
         # self.result.classify_examination = None
         # self.result.classify_examination_length = None

@@ -1,4 +1,5 @@
 from tkinter import *
+from tkinter import messagebox
 
 from src.utils.util import *
 
@@ -20,3 +21,4 @@ class ResultPanel(Frame):
         BEGIN = 1.0
         self.result_text.delete(BEGIN, END)
         self.result_text.insert(END, output)
+        messagebox.showinfo(UPDATE_TEXT, UPDATING_RESULT_FINISHED_MESSAGE)
