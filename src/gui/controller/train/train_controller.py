@@ -1,28 +1,23 @@
-from enum import Enum
-
 from src.utils.util import *
 import src.feature.provider as features
 from src.model.universite_de_mons_data.examination import Examination, HypnogramType
 from src.ai.model import Model
 from src.ai.classifier import Classifier
-
-
-class StagesMode(Enum):
-    REM_VS_NREM = 0
-    ALL_STAGES = 1
+from src.model.stage_mode import StageMode
 
 
 class TrainController:
-    def __init__(self):
+    def __init__(self, result=None):
         self.features_callbacks = features.callbacks()
         self.features_titles = [c.__name__ for c in self.features_callbacks]
         self.examinations = ["subject{}".format(i + 1) for i in range(20)]
         self.window_sizes = [("{}s".format(i * 10 + 5), i * 10 + 5) for i in range(5)]
-        self.stage_modes = [('REM vs NREM', StagesMode.REM_VS_NREM.value), ('All stages', StagesMode.ALL_STAGES.value)]
+        self.stage_modes = [('REM vs NREM', StageMode.REM_VS_NREM.value), ('All stages', StageMode.ALL_STAGES.value)]
         self.epochs = [(str(i), i) for i in [1, 2, 5, 10, 15]]
-        self.training_part_percentage = [('{}%'.format((i + 1) * 12.5), (i + 1) * 12.5) for i in range(6)]
+        self.training_part_percentage = [('{}%'.format((i + 1) * 12.5), (i + 1) * 12.5) for i in range(7)]
         self.model = None
         self.classifier = None
+        self.result = result
 
     def on_train_button_click(self, input_data):
         checked_train_items = self._verify_checked_train_items(input_data)
@@ -37,11 +32,31 @@ class TrainController:
         l_train, f_train, l_test, f_test = self._prepare_train_test_sets(data_set,
                                                                          training_part_percentage=checked_train_items[
                                                                              TRAINING_PART_KEY])
-        self.model = self._prepare_model(f_train, l_train, epochs=checked_train_items[EPOCHS_KEY])
-        self.classifier = self._prepare_classifier(self.model)
-        print(self._evaluate_classifier_efficiency(
-            self.classifier, f_test, l_test
-        ))
+        # self.model = self._prepare_model(f_train, l_train, epochs=checked_train_items[EPOCHS_KEY])
+        # self.classifier = self._prepare_classifier(self.model)
+        # accuracy = self._evaluate_classifier_efficiency(self.classifier, f_test, l_test)[1]
+        self.update_result(
+            checked_train_items[EXAMINATIONS_KEY],
+            [f.__name__ for f in checked_train_items[FEATURES_KEY]],
+            checked_train_items[WINDOW_WIDTH_KEY],
+            checked_train_items[STAGE_MODE_KEY],
+            checked_train_items[EPOCHS_KEY],
+            checked_train_items[TRAINING_PART_KEY],
+            "name",
+            0
+        )
+
+    def update_result(self, examinations, features, window_width, stage_mode, epochs,
+                      training_part, model_name, accuracy):
+        if self.result:
+            self.result.examinations = examinations
+            self.result.features = features
+            self.result.window_width = window_width
+            self.result.stage_mode = stage_mode
+            self.result.epochs = epochs
+            self.result.training_part = training_part
+            self.result.model_name = model_name
+            self.result.accuracy = accuracy
 
     def _verify_checked_train_items(self, input_data):
         examinations = input_data[EXAMINATIONS_KEY]
@@ -68,7 +83,7 @@ class TrainController:
             TRAINING_PART_KEY: training_part
         }
 
-    def _prepare_model(self, f_train, l_train, has_normalization=True, epochs=15):
+    def _prepare_model(self, f_train, l_train, has_normalization=True, epochs=EPOCHS_DEFAULT):
         return Model(f_train, l_train, has_normalization, epochs)
 
     def _prepare_classifier(self, model):
@@ -77,7 +92,7 @@ class TrainController:
     def _evaluate_classifier_efficiency(self, classifier, f_test, l_test):
         return classifier.evaluate(f_test, l_test)
 
-    def _prepare_train_test_sets(self, data_set, training_part_percentage=70):
+    def _prepare_train_test_sets(self, data_set, training_part_percentage=TRAINING_PART_PERCENTAGE_DEFAULT):
         self._extreme_shuffle_data_set(data_set)
         split_index = int(len(data_set) * training_part_percentage / 100)
         training = data_set[:split_index]
@@ -137,8 +152,8 @@ class TrainController:
                 if not (key is 'title' or key is 'data')}
 
     # todo stages_mode from radiobox
-    def _prepare_data_set_for_one_examination(self, stages, features_callbacks, window_width=1,
-                                              stage_mode=StagesMode.REM_VS_NREM, **kwargs):
+    def _prepare_data_set_for_one_examination(self, stages, features_callbacks, window_width=WINDOW_WIDTH_DEFAULT,
+                                              stage_mode=STAGE_MODE_VALUE_DEFAULT, **kwargs):
         class_nos = self.stages_to_class_nos(stages, stage_mode)
         data_set = []
         for value, class_no in zip(stages.values(), class_nos):
@@ -149,18 +164,19 @@ class TrainController:
             )
         return data_set
 
-    def stages_to_class_nos(self, stages, stage_mode=StagesMode.REM_VS_NREM.value):
+    def stages_to_class_nos(self, stages, stage_mode=STAGE_MODE_VALUE_DEFAULT):
         keys = stages.keys()
         class_nos = []
-        if StagesMode.REM_VS_NREM.value == stage_mode:
+        if StageMode.REM_VS_NREM.value == stage_mode:
             class_nos = [1 if k is 'rem' else 0 for k in keys]
-        elif StagesMode.ALL_STAGES.value is stage_mode:
+        elif StageMode.ALL_STAGES.value is stage_mode:
             class_nos = [i for i in range(len(keys))]
         else:
             pass
         return class_nos
 
-    def _prepare_data_set_for_one_stage(self, stage, class_no, features_callbacks, window_width=1, **kwargs):
+    def _prepare_data_set_for_one_stage(self, stage, class_no, features_callbacks,
+                                        window_width=WINDOW_WIDTH_DEFAULT, **kwargs):
         calculated_features_set = []
         for samples in stage:
             calculated_features = self._calculate_features(samples, features_callbacks, window_width, **kwargs)
@@ -168,7 +184,7 @@ class TrainController:
         data_set = [[(class_no, cf) for cf in calculated_features] for calculated_features in calculated_features_set]
         return data_set
 
-    def _calculate_features(self, samples, features_callbacks, window_width=1, **kwargs):
+    def _calculate_features(self, samples, features_callbacks, window_width=WINDOW_WIDTH_DEFAULT, **kwargs):
         if window_width % 2 is 0:
             raise Exception(WINDOW_SIZE_EXCEPTION_MESSAGE)
         pre = int(window_width / 2)

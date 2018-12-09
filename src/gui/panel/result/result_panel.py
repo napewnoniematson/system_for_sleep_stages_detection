@@ -10,5 +10,13 @@ class ResultPanel(Frame):
         self.controller = controller
         self.label = Label(self, text=RESULT_TEXT)
         self.label.pack(side=TOP, anchor=N)
-        self.result_text = Text(self, state='disabled')
+        self.result_text = Text(self, state=NORMAL)
         self.result_text.pack(side=TOP, anchor=N)
+        self.update_button = Button(self, text=UPDATE_TEXT, command=self.update)
+        self.update_button.pack(side=LEFT, anchor=N)
+
+    def update(self):
+        output = self.controller.update()
+        BEGIN = 1.0
+        self.result_text.delete(BEGIN, END)
+        self.result_text.insert(END, output)

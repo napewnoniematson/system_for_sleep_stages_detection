@@ -1,18 +1,34 @@
+# DEFAULTS
+from src.model.stage_mode import StageMode
+WINDOW_WIDTH_DEFAULT = 5
+STAGE_MODE_VALUE_DEFAULT = StageMode.REM_VS_NREM.value
+EPOCHS_DEFAULT = 15
+TRAINING_PART_PERCENTAGE_DEFAULT = 70
+MODEL_NAME_DEFAULT = 'model_default_name'
+
 # GUI
 TITLE = "System for sleep stages detection"
+MODEL_NAME_TEXT = 'Model name'
 EXAMINATIONS_TEXT = "Examinations"
 FEATURES_TEXT = "Features"
 WINDOW_WIDTH_TEXT = "Window width"
 STAGE_MODE_TEXT = 'Stage mode'
 EPOCHS_TEXT = 'Epochs'
 TRAINING_PART_TEXT = 'Training part'
+ACCURACY_TEXT = 'Accuracy'
 TRAINING_TEXT = "TRAIN"
+CLASSIFY_TEXT = 'CLASSIFY'
 SAVE_MODEL_TEXT = "Save model"
 LOAD_MODEL_TEXT = "Load model"
+UPDATE_TEXT = 'Update'
 RESULT_TEXT = "Result"
 EXAMINATIONS_FOR_CLASSIFY_TEXT = "Examination for classify"
+EXAMINATIONS_FOR_CLASSIFY_LENGTH_TEXT = "Examination for classify length"
 CLASSIFY_BUTTON_TEXT = "CLASSIFY"
 CONTROLLER_NOT_FOUND_EXCEPTION = "View's controller not found"
+TRAINING_FINISHED_MESSAGE = 'Training is finished'
+LOADING_MODEL_FINISHED_MESSAGE = 'Loading is finished'
+SAVING_MODEL_FINISHED_MESSAGE = 'Saving is finished'
 
 # DICTIONARY_KEYS
 EXAMINATIONS_KEY = "examinations"
