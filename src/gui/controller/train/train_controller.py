@@ -8,7 +8,7 @@ from src.ai.classifier import Classifier
 
 
 class StagesMode(Enum):
-    REM_VS_NO_REM = 0,
+    REM_VS_NREM = 0
     ALL_STAGES = 1
 
 
@@ -16,8 +16,11 @@ class TrainController:
     def __init__(self):
         self.features_callbacks = features.callbacks()
         self.features_titles = [c.__name__ for c in self.features_callbacks]
-        self.examinations = ["subject{}".format(i) for i in range(20)]
+        self.examinations = ["subject{}".format(i + 1) for i in range(20)]
         self.window_sizes = [("{}s".format(i * 10 + 5), i * 10 + 5) for i in range(5)]
+        self.stage_modes = [('REM vs NREM', StagesMode.REM_VS_NREM.value), ('All stages', StagesMode.ALL_STAGES.value)]
+        self.epochs = [(str(i), i) for i in [1, 2, 5, 10, 15]]
+        self.training_part_percentage = [('{}%'.format((i + 1) * 12.5), (i + 1) * 12.5) for i in range(6)]
         self.model = None
         self.classifier = None
 
@@ -26,13 +29,15 @@ class TrainController:
         data_set = self._prepare_data_set(
             checked_train_items[EXAMINATIONS_KEY],
             checked_train_items[FEATURES_KEY],
-            checked_train_items[WINDOW_WIDTH_KEY]
+            checked_train_items[WINDOW_WIDTH_KEY],
+            checked_train_items[STAGE_MODE_KEY]
             # todo **kwargs for features callback functions
         )
         data_set = self._flatten_data_set(data_set)
-        l_train, f_train, l_test, f_test = self._prepare_train_test_sets(data_set)
-        # todo epochs from radiobox
-        self.model = self._prepare_model(f_train, l_train, epochs=2)
+        l_train, f_train, l_test, f_test = self._prepare_train_test_sets(data_set,
+                                                                         training_part_percentage=checked_train_items[
+                                                                             TRAINING_PART_KEY])
+        self.model = self._prepare_model(f_train, l_train, epochs=checked_train_items[EPOCHS_KEY])
         self.classifier = self._prepare_classifier(self.model)
         print(self._evaluate_classifier_efficiency(
             self.classifier, f_test, l_test
@@ -47,10 +52,20 @@ class TrainController:
                             features_checked[i] is not 0]
 
         window_width = input_data[WINDOW_WIDTH_KEY]
+
+        stage_mode = input_data[STAGE_MODE_KEY]
+
+        epochs = input_data[EPOCHS_KEY]
+
+        training_part = input_data[TRAINING_PART_KEY]
+
         return {
             EXAMINATIONS_KEY: examinations,
             FEATURES_KEY: features_checked,
-            WINDOW_WIDTH_KEY: window_width
+            WINDOW_WIDTH_KEY: window_width,
+            STAGE_MODE_KEY: stage_mode,
+            EPOCHS_KEY: epochs,
+            TRAINING_PART_KEY: training_part
         }
 
     def _prepare_model(self, f_train, l_train, has_normalization=True, epochs=15):
@@ -84,7 +99,8 @@ class TrainController:
             f_data.append(data[1])
         return l_data, f_data
 
-    def _prepare_data_set(self, examination_titles, features_callbacks, window_width, **kwargs):
+    def _prepare_data_set(self, examination_titles, features_callbacks, window_width,
+                          stage_mode, **kwargs):
         data_set = []
         for title in examination_titles:
             # load examination
@@ -94,7 +110,7 @@ class TrainController:
             stages = self._convert_indices_to_values(eeg, stages_indices)
             data_set.append(
                 self._prepare_data_set_for_one_examination(
-                    stages, features_callbacks, window_width, **kwargs
+                    stages, features_callbacks, window_width, stage_mode, **kwargs
                 )
             )
         return data_set
@@ -122,8 +138,8 @@ class TrainController:
 
     # todo stages_mode from radiobox
     def _prepare_data_set_for_one_examination(self, stages, features_callbacks, window_width=1,
-                                              stages_mode=StagesMode.REM_VS_NO_REM, **kwargs):
-        class_nos = self.stages_to_class_nos(stages, stages_mode)
+                                              stage_mode=StagesMode.REM_VS_NREM, **kwargs):
+        class_nos = self.stages_to_class_nos(stages, stage_mode)
         data_set = []
         for value, class_no in zip(stages.values(), class_nos):
             data_set.append(
@@ -133,12 +149,12 @@ class TrainController:
             )
         return data_set
 
-    def stages_to_class_nos(self, stages, stages_mode=StagesMode.REM_VS_NO_REM):
+    def stages_to_class_nos(self, stages, stage_mode=StagesMode.REM_VS_NREM.value):
         keys = stages.keys()
         class_nos = []
-        if stages_mode is StagesMode.REM_VS_NO_REM:
+        if StagesMode.REM_VS_NREM.value == stage_mode:
             class_nos = [1 if k is 'rem' else 0 for k in keys]
-        elif stages_mode is StagesMode.ALL_STAGES:
+        elif StagesMode.ALL_STAGES.value is stage_mode:
             class_nos = [i for i in range(len(keys))]
         else:
             pass
