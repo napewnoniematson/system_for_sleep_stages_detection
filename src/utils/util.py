@@ -24,6 +24,7 @@ CLASSIFY_TEXT = 'CLASSIFY'
 SAVE_MODEL_TEXT = "Save model"
 LOAD_MODEL_TEXT = "Load model"
 UPDATE_TEXT = 'Update'
+FIGURE_TEXT = 'Figure'
 RESULT_TEXT = "Result"
 EXAMINATIONS_FOR_CLASSIFY_TEXT = "Examination for classify"
 EXAMINATIONS_FOR_CLASSIFY_LENGTH_TEXT = "Examination for classify length"

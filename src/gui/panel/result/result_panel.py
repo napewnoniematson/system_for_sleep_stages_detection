@@ -15,6 +15,8 @@ class ResultPanel(Frame):
         self.result_text.pack(side=TOP, anchor=N)
         self.update_button = Button(self, text=UPDATE_TEXT, command=self.update)
         self.update_button.pack(side=LEFT, anchor=N)
+        self.figure_button = Button(self, text=FIGURE_TEXT, command=self.figure)
+        self.figure_button.pack(side=LEFT, anchor=N)
 
     def update(self):
         output = self.controller.update()
@@ -22,3 +24,6 @@ class ResultPanel(Frame):
         self.result_text.delete(BEGIN, END)
         self.result_text.insert(END, output)
         messagebox.showinfo(UPDATE_TEXT, UPDATING_RESULT_FINISHED_MESSAGE)
+
+    def figure(self):
+        print('figure')
