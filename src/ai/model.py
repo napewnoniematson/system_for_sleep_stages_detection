@@ -3,7 +3,7 @@ from src.utils.util import *
 
 
 class Model:
-    def __init__(self, features_train, labels_train, has_normalization=False, epochs=15):
+    def __init__(self, features_train, labels_train, has_normalization=False, epochs=EPOCHS_DEFAULT):
         self.features = features_train
         self.labels = labels_train
         self.__normalize(is_on=has_normalization)
