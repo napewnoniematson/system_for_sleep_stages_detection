@@ -9,5 +9,5 @@ class MainController:
     def __init__(self):
         result = Result()
         self.train_controller = TrainController(result=result)
-        self.classify_controller = ClassifyController(result=result)
+        self.classify_controller = ClassifyController(result=result, classifier=self.train_controller.classifier)
         self.result_controller = ResultController(result=result)

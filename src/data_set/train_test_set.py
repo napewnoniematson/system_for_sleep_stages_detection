@@ -6,12 +6,12 @@ def prepare_train_test_sets(data_set, training_part_percentage=TRAINING_PART_PER
     split_index = int(len(data_set) * training_part_percentage / 100)
     training = data_set[:split_index]
     test = data_set[split_index:]
-    l_train, f_train = _split_data_set_numpy(training)
-    l_test, f_test = _split_data_set_numpy(test)
+    l_train, f_train = split_data_set_numpy(training)
+    l_test, f_test = split_data_set_numpy(test)
     return l_train, f_train, l_test, f_test
 
 
-def _split_data_set_numpy(data_set):
+def split_data_set_numpy(data_set):
     import numpy as np
     l_data, f_data = _split_data_set(data_set)
     return np.array(l_data), np.array(f_data)

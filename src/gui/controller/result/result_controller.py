@@ -12,9 +12,10 @@ class ResultController:
             self.highlight_title(TRAINING_TEXT),
             self.one_line(MODEL_NAME_TEXT, self.result.model_name),
             self.one_line(EXAMINATIONS_TEXT, self.list_str(self.result.examinations)),
-            self.one_line(FEATURES_TEXT, self.list_str(self.result.features)),
+            self.one_line(FEATURES_TEXT, self.list_str([f.__name__ for f in self.result.features]
+                                                       if self.result.features else None)),
             self.one_line(WINDOW_WIDTH_TEXT, self.result.window_width),
-            self.one_line(STAGE_MODE_TEXT, self.result.stage_mode),
+            self.one_line(STAGE_MODE_TEXT, StageMode(self.result.stage_mode).name if self.result.stage_mode else None),
             self.one_line(EPOCHS_TEXT, self.result.epochs),
             self.one_line(TRAINING_PART_TEXT, self.result.training_part),
             self.one_line(ACCURACY_TEXT, self.result.accuracy),

@@ -37,19 +37,19 @@ class TrainController:
         l_train, f_train, l_test, f_test = tss.prepare_train_test_sets(
             data_set, training_part_percentage=checked_train_items[TRAINING_PART_KEY]
         )
-        self.model = self._prepare_model(f_train, l_train, epochs=checked_train_items[EPOCHS_KEY])
         self.model = Model(f_train, l_train, has_normalization=True, epochs=checked_train_items[EPOCHS_KEY])
+        self.model_name = MODEL_NAME.format(self.get_time()) + MODEL_FILE_EXTENSION
         self.classifier = Classifier(self.model)
         accuracy = self.classifier.evaluate(f_test, l_test)[1]
         self.update_result(
             checked_train_items[EXAMINATIONS_KEY],
-            [f.__name__ for f in checked_train_items[FEATURES_KEY]],
+            checked_train_items[FEATURES_KEY],
             checked_train_items[WINDOW_WIDTH_KEY],
-            StageMode(checked_train_items[STAGE_MODE_KEY]).name,
+            checked_train_items[STAGE_MODE_KEY],
             checked_train_items[EPOCHS_KEY],
             checked_train_items[TRAINING_PART_KEY],
-            "name",
-            0
+            self.model_name,
+            accuracy
         )
 
     def update_result(self, examinations, features, window_width, stage_mode, epochs,
@@ -72,11 +72,11 @@ class TrainController:
         features_checked = [self.features_callbacks[i] for i in range(len(features_checked)) if
                             features_checked[i] is not 0]
 
-        window_width = input_data[WINDOW_WIDTH_KEY]
+        window_width = int(input_data[WINDOW_WIDTH_KEY])
 
-        stage_mode = input_data[STAGE_MODE_KEY]
+        stage_mode = int(input_data[STAGE_MODE_KEY])
 
-        epochs = input_data[EPOCHS_KEY]
+        epochs = int(input_data[EPOCHS_KEY])
 
         training_part = input_data[TRAINING_PART_KEY]
 
@@ -221,8 +221,6 @@ class TrainController:
 
     def on_save_model_button_click(self):
         if self.model:
-            date = self.get_time()
-            self.model_name = MODEL_NAME.format(date) + MODEL_FILE_EXTENSION
             self.model.save(file=self.model_name)
 
     @staticmethod

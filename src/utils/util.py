@@ -42,6 +42,7 @@ WINDOW_WIDTH_KEY = "window_width"
 STAGE_MODE_KEY = 'stage_mode'
 EPOCHS_KEY = 'epochs'
 TRAINING_PART_KEY = 'training_part_percentage'
+CLASSIFY_KEY = 'classify'
 
 FEATURES_TITLES_KEY = "titles"
 FEATURES_CALLBACKS_KEY = "callbacks"
