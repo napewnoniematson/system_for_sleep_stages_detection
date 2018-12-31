@@ -7,6 +7,8 @@ from src.gui.main_view import MainView
 
 if __name__ == '__main__':
     logger.info(START_APP)
+    import src.test as t
+    # t.start()
     root = Tk()
     ctr = Controller()
     main_view = MainView(root, ctr)

@@ -3,11 +3,13 @@ from src.model.stage_mode import StageMode
 
 WINDOW_WIDTH_DEFAULT = 5
 STAGE_MODE_VALUE_DEFAULT = StageMode.REM_VS_NREM.value
-EPOCHS_DEFAULT = 15
+EPOCHS_DEFAULT = 5
 TRAINING_PART_PERCENTAGE_DEFAULT = 70
 SAMPLING_FREQ_DEFAULT = 200
 MODEL_NAME = 'model_{}'
 MODEL_NAME_DEFAULT = 'model_default_name'
+
+DEPRECATED_REASON = 'Old issue solution'
 
 # GUI
 TITLE = "System for sleep stages detection"

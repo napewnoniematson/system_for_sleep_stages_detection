@@ -12,10 +12,10 @@ class TrainPanel(Frame):
     def __init__(self, root, controller):
         Frame.__init__(self, root)
         self.controller = controller
-        self.train_choice_panel = TrainChoicePanel(self, self.controller.examinations,
+        self.train_choice_panel = TrainChoicePanel(self, self.controller.examinations_titles,
                                                    self.controller.features_titles, self.controller.window_sizes,
-                                                   self.controller.stage_modes, self.controller.epochs,
-                                                   self.controller.training_part_percentage)
+                                                   self.controller.stage_modes, self.controller.epochs
+                                                   )
         self.train_choice_panel.pack(side=TOP, anchor=N)
         self.train_buttons_panel = TrainButtonsPanel(self, train_callback=self.train_callback,
                                                      save_callback=self.save_callback,

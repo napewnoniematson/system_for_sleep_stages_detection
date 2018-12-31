@@ -1,6 +1,7 @@
 import math
 import statistics as stat
 import scipy.signal as signal
+import scipy.fftpack as fft_pack
 from src.utils.util import *
 
 
@@ -13,23 +14,11 @@ def root_mean_square(samples, **kwargs):
 
 
 def max_peak(samples, **kwargs):
-    max_val = -3000
-    for y in samples:
-        if y > max_val:
-            max_val = y
-    if max_val <= -3000:
-        raise ValueError
-    return max_val
+    return max(samples)
 
 
 def min_peak(samples, **kwargs):
-    min_val = 3000
-    for y in samples:
-        if y < min_val:
-            min_val = y
-    if min_val >= 3000:
-        raise ValueError
-    return min_val
+    return min(samples)
 
 
 def mean(samples, **kwargs):
@@ -58,5 +47,18 @@ def median(samples, **kwargs):
     return stat.median(samples)
 
 
+# todo test
+def mean_normalized(samples, **kwargs):
+    mean_val = mean(samples)
+    min_val = min_peak(samples)
+    max_val = max_peak(samples)
+    return (mean_val - min_val) / (max_val - min_val)
+
+
+def sum_of_fft(samples, **kwargs):
+    return sum(fft_pack.fft(samples))
+
+
 def callbacks():
-    return [value, min_peak, max_peak, variance, spectrogram, mean, root_mean_square, median]
+    return [value, min_peak, max_peak, variance, spectrogram, mean, root_mean_square, median, mean_normalized,
+            sum_of_fft]

@@ -17,7 +17,6 @@ class ResultController:
             self.one_line(WINDOW_WIDTH_TEXT, self.result.window_width),
             self.one_line(STAGE_MODE_TEXT, StageMode(self.result.stage_mode).name if self.result.stage_mode else None),
             self.one_line(EPOCHS_TEXT, self.result.epochs),
-            self.one_line(TRAINING_PART_TEXT, self.result.training_part),
             self.one_line(ACCURACY_TEXT, self.result.accuracy),
             self.highlight_title(CLASSIFY_TEXT),
             self.one_line(EXAMINATIONS_FOR_CLASSIFY_TEXT, self.result.classify_examination),

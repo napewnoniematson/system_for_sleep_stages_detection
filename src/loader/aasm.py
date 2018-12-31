@@ -1,4 +1,7 @@
+from deprecated import deprecated
+
 from src.logger.messages import *
+from src.utils.util import *
 import src.logger.logger as logger
 
 
@@ -32,7 +35,15 @@ def __split_data(data):
     return title, hypnogram_data
 
 
-# todo minus 1 in length is really important? same issue in r&k
+def __extend_data(data):
+    extended_data = []
+    for sample in data:
+        for i in range(1000):
+            extended_data.append(sample)
+    return extended_data
+
+
+@deprecated(reason=DEPRECATED_REASON)
 def __prepare_data(hypnogram):
     logger.info(AASM_PREPARE_DATA_START_INFO)
     filtered = __filter_data(hypnogram)
@@ -72,6 +83,19 @@ def __prepare_data(hypnogram):
     }
 
 
-def load(path):
+@deprecated(reason=DEPRECATED_REASON)
+def load_selected_data(path):
     hypnogram = __load_data_from_file(path)
     return __prepare_data(hypnogram)
+
+
+def load(path):
+    hypnogram = __load_data_from_file(path)
+    filtered = __filter_data(hypnogram)
+    _, hypnogram_data = __split_data(filtered)
+    return hypnogram_data
+
+
+def load_extended_data(path):
+    hypnogram_data = load(path)
+    return __extend_data(hypnogram_data)
