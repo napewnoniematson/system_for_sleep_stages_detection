@@ -1,14 +1,14 @@
-from tkinter import Tk
-
-from src.controller.main_controller import MainController as Controller
 from src.logger.messages import *
 import src.logger.logger as logger
-from src.gui.main_view import MainView
+import src.case as case
+import src.test as test
+from src.utils.util import *
 
 if __name__ == '__main__':
     logger.info(START_APP)
-    # t.start()
-    root = Tk()
-    ctr = Controller()
-    main_view = MainView(root, ctr)
-    root.mainloop()
+    # from src.feature_pack.feature import *
+    # a = [1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2]
+    # print(delta_energy(a))
+    import src.flow as run_
+    # run_
+    # test.start()

@@ -1,170 +1,71 @@
-from src.decorator.timer import timer
 from src.utils.util import *
-from src.model.stage_mode import StageMode
 from src.model.examination import Examination
-from deprecated import deprecated
 from collections import Counter
 
 
-@timer
 def load_examinations(examination_titles):
     return [Examination(title) for title in examination_titles]
 
 
-def all_stages_to_rem_vs_non_rem(hypnogram):
-    return ['1' if stage is '1' else '0' for stage in hypnogram]
+def check_correctness(signals, hypnogram):
+    for s in signals:
+        if len(s) != len(hypnogram):
+            raise Exception("Hypnogram and signal length are not the same")
 
 
-def hypnogram_by_stage(hypnogram, stage_mode):
-    return all_stages_to_rem_vs_non_rem(hypnogram) if StageMode.REM_VS_NREM.value == stage_mode else hypnogram
-
-
-def check_correctness(samples, hypnogram):
-    if len(samples) != len(hypnogram):
-        raise Exception("Hypnogram and signal length are not the same")
-
-
-@timer
-def examinations_data_set(examinations, features_callbacks, window_width,
-                          stage_mode, **kwargs):
+def examinations_data_set(examinations, features_callbacks, window, **kwargs):
     data_set = []
     for examination in examinations:
         data_set.append(
             _calculate_data_set_for_examination(
-                examination, features_callbacks, window_width, stage_mode, **kwargs
+                examination, features_callbacks, window, **kwargs
             )
         )
     return data_set
 
 
-def _calculate_data_set_for_examination(examination, features_callbacks, window_width=WINDOW_WIDTH_DEFAULT,
-                                        stage_mode=STAGE_MODE_VALUE_DEFAULT, **kwargs):
-    samples = examination.eeg.load_fpi_a2()
-    hypnogram = hypnogram_by_stage(examination.hypnogram, stage_mode)
-    check_correctness(samples, hypnogram)
-
+def _calculate_data_set_for_examination(examination, features_callbacks, window=WINDOW_DEFAULT, **kwargs):
+    signals = [examination.psg.load_fpi_a2(), examination.psg.load_eog1_a2()]
+    hypnogram = examination.hypnogram
+    check_correctness(signals, hypnogram)
+    if len(signals) != len(features_callbacks):
+        raise Exception("Chuj wam w dupe")
     begin = 0
-    end = _allowed_upper_bound(samples, window_width)
+    end = _allowed_upper_bound(signals[0], window)
     calculated_features = []
-    for i in range(begin, end, window_width):
-        window_samples = samples[i:i + window_width]
-        window_hypnogram = hypnogram[i:i + window_width]
+    for i in range(begin, end, window):
+        window_hypnogram = hypnogram[i:i + window]
+        if _has_unknown(window_hypnogram):
+            continue
+        label = _find_class(window_hypnogram)
+        feat = []
+        for callbacks, signal in zip(features_callbacks, signals):
+            for func in callbacks:
+                feat.append(func(signal[i:i+window], **kwargs))
+
         calculated_features.append(
             (
                 _find_class(window_hypnogram),
-                _calculate_features_for_window(window_samples, features_callbacks, **kwargs)
+                feat
             )
         )
     return calculated_features
 
 
-def _allowed_upper_bound(samples, window_width):
-    return len(samples) if len(samples) % window_width == 0 else len(samples) - window_width
+def _has_unknown(hypnogram):
+    for h in hypnogram:
+        if h is UNKNOWN:
+            return True
+    return False
 
 
-def _find_class(window_hypnogram):
-    return Counter(window_hypnogram).most_common()[0][0]
+def _allowed_upper_bound(samples, window):
+    return len(samples) if len(samples) % window == 0 else len(samples) - window
 
 
-def _calculate_features_for_window(window_samples, features_callbacks, **kwargs):
-    calculated_features = []
-    for feature_callback in features_callbacks:
-        calculated_features.append(feature_callback(window_samples, **kwargs))
-    return calculated_features
+def _find_class(hypnogram):
+    return Counter(hypnogram).most_common()[0][0]
 
 
-@deprecated(reason=DEPRECATED_REASON)
-def prepare_data_set_old(examination_titles, features_callbacks, window_width,
-                         stage_mode, **kwargs):
-    data_set = []
-    for title in examination_titles:
-        # load examination
-        examination = Examination(title)
-        eeg = examination.eeg.load_fpi_a2()
-        stages_indices = _get_stages_indices(examination)
-        stages = _convert_indices_to_values(eeg, stages_indices)
-        data_set.append(
-            _prepare_data_set_for_one_examination(
-                stages, features_callbacks, window_width, stage_mode, **kwargs
-            )
-        )
-    return data_set
-
-
-# =================================================DEPRECATED==========================================================
-@deprecated(reason=DEPRECATED_REASON)
-def flatten_4_level_data_set(data_set):
-    temp = []
-    for examination in data_set:
-        for i in examination:
-            for j in i:
-                for x in j:
-                    temp.append(x)
-    return temp
-
-
-@deprecated(reason=DEPRECATED_REASON)
-def _prepare_data_set_for_one_examination(stages, features_callbacks, window_width=WINDOW_WIDTH_DEFAULT,
-                                          stage_mode=STAGE_MODE_VALUE_DEFAULT, **kwargs):
-    class_nos = stages_to_class_nos(stages, stage_mode)
-    data_set = []
-    for value, class_no in zip(stages.values(), class_nos):
-        data_set.append(
-            _prepare_data_set_for_one_stage(
-                value, class_no, features_callbacks, window_width, **kwargs
-            )
-        )
-    return data_set
-
-
-@deprecated(reason=DEPRECATED_REASON)
-def _prepare_data_set_for_one_stage(stage, class_no, features_callbacks,
-                                    window_width=WINDOW_WIDTH_DEFAULT, **kwargs):
-    calculated_features_set = []
-    for samples in stage:
-        calculated_features = _calculate_features_overlapping(samples, features_callbacks, window_width, **kwargs)
-        calculated_features_set.append(calculated_features)
-    data_set = [[(class_no, cf) for cf in calculated_features] for calculated_features in calculated_features_set]
-    return data_set
-
-
-@deprecated(reason=DEPRECATED_REASON)
-def _calculate_features_overlapping(samples, features_callbacks, window_width=WINDOW_WIDTH_DEFAULT, **kwargs):
-    if window_width % 2 is 0:
-        raise Exception(WINDOW_SIZE_EXCEPTION_MESSAGE)
-    pre = int(window_width / 2)
-    post = int(window_width - pre)
-    samples_amount = len(samples)
-    calculated_features = []
-    for i in range(samples_amount):
-        if i < pre or i > samples_amount - post:
-            continue
-        window_samples = samples[i - pre:i + post]
-        calculated_features.append(
-            _calculate_features_for_window(window_samples, features_callbacks, **kwargs)
-        )
-    return calculated_features
-
-
-@deprecated(reason=DEPRECATED_REASON)
-def stages_to_class_nos(stages, stage_mode=STAGE_MODE_VALUE_DEFAULT):
-    keys = stages.keys()
-    class_nos = []
-    if StageMode.REM_VS_NREM.value == stage_mode:
-        class_nos = [1 if k is 'rem' else 0 for k in keys]
-    elif StageMode.ALL_STAGES.value is stage_mode:
-        class_nos = [i for i in range(len(keys))]
-    else:
-        pass
-    return class_nos
-
-
-@deprecated(reason=DEPRECATED_REASON)
-def _get_stages_indices(examination):
-    return {key: value for key, value in examination.hypnogram.items()
-            if not (key is 'title' or key is 'data')}
-
-
-@deprecated(reason=DEPRECATED_REASON)
-def _convert_indices_to_values(eeg, stages_indices):
-    return {key: [eeg[indices[0]:indices[1]] for indices in value] for key, value in stages_indices.items()}
+def _calculate_features_for_window(samples, callbacks, **kwargs):
+    return [c(samples, **kwargs) for c in callbacks]

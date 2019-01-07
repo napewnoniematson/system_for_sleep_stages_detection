@@ -1,41 +1,27 @@
-# DEFAULTS
-from src.model.stage_mode import StageMode
+# SLEEP STAGE
+UNKNOWN = -1
+AWAKE = 0
+REM = 1
+NON_REM = 2
 
-WINDOW_WIDTH_DEFAULT = 5
-STAGE_MODE_VALUE_DEFAULT = StageMode.REM_VS_NREM.value
+# RHYTHM FREQ
+ALPHA_LOW = 8
+ALPHA_HIGH = 13
+BETA_LOW = 13
+BETA_HIGH = 20
+THETA_LOW = 4
+THETA_HIGH = 8
+DELTA_LOW = 0.5
+DELTA_HIGH = 4
+
+# DEFAULTS
+
+WINDOW_DEFAULT = 5
 EPOCHS_DEFAULT = 5
-TRAINING_PART_PERCENTAGE_DEFAULT = 70
 SAMPLING_FREQ_DEFAULT = 200
 MODEL_NAME = 'model_{}'
 MODEL_NAME_DEFAULT = 'model_default_name'
-
 DEPRECATED_REASON = 'Old issue solution'
-
-# GUI
-TITLE = "System for sleep stages detection"
-MODEL_NAME_TEXT = 'Model name'
-EXAMINATIONS_TEXT = "Examinations"
-FEATURES_TEXT = "Features"
-WINDOW_WIDTH_TEXT = "Window width"
-STAGE_MODE_TEXT = 'Stage mode'
-EPOCHS_TEXT = 'Epochs'
-TRAINING_PART_TEXT = 'Training part'
-ACCURACY_TEXT = 'Accuracy'
-TRAINING_TEXT = "TRAIN"
-CLASSIFY_TEXT = 'CLASSIFY'
-SAVE_MODEL_TEXT = "Save model"
-LOAD_MODEL_TEXT = "Load model"
-UPDATE_TEXT = 'Update'
-FIGURE_TEXT = 'Figure'
-RESULT_TEXT = "Result"
-EXAMINATIONS_FOR_CLASSIFY_TEXT = "Examination for classify"
-EXAMINATIONS_FOR_CLASSIFY_LENGTH_TEXT = "Examination for classify length"
-CLASSIFY_BUTTON_TEXT = "CLASSIFY"
-CONTROLLER_NOT_FOUND_EXCEPTION = "View's controller not found"
-TRAINING_FINISHED_MESSAGE = 'Training is finished'
-LOADING_MODEL_FINISHED_MESSAGE = 'Loading is finished'
-SAVING_MODEL_FINISHED_MESSAGE = 'Saving is finished'
-UPDATING_RESULT_FINISHED_MESSAGE = 'Updating is finished'
 
 # DICTIONARY_KEYS
 EXAMINATIONS_KEY = "examinations"
@@ -54,9 +40,6 @@ SAMPLING_FREQ = 'sampling_freq'
 # EXCEPTION MESSAGES
 WINDOW_SIZE_EXCEPTION_MESSAGE = "Illegal window size exception"
 
-# PATHS
-PHYSIONET_PHYSIOBANK_DATABASE_SLEEP_EDFX = "/home/pc/mgr/mgr_data/SC4002E0-PSG.edf"
-PHYSIONET_PHYSIOBANK_DATABASE_SHHPSGDB = "/home/pc/mgr/mgr_data/0000.edf"
 UNIVERSITE_DE_MONS = "/home/pc/mgr/mgr_data/{}.edf"
 UNIVERSITE_DE_MONS_HYPNOGRAM_AASM = \
     "/home/pc/mgr/mgr_data/HypnogramAASM_{}.txt"
@@ -69,6 +52,7 @@ MODEL_FILE_EXTENSION = '.model'
 MODEL_FILE = MODEL_NAME_DEFAULT + MODEL_FILE_EXTENSION
 
 LOG_DATE_TIME_FORMAT = '%Y-%m-%d %H:%M:%S'
+
 # ***********************LOAD_EDF************************
 # ECG
 LOAD_EDF_ECG_NO = 0
@@ -112,3 +96,5 @@ EEG_O1_A2_NO = 2
 EEG_FP2_A1_NO = 3
 EEG_O2_A1_NO = 4
 EEG_CZ2_A1_NO = 5
+EOG1_A2_NO = 6
+EOG2_A2_NO = 7

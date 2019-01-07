@@ -3,6 +3,7 @@ import statistics as stat
 import scipy.signal as signal
 import scipy.fftpack as fft_pack
 from src.utils.util import *
+from src.filter.butterworth import butter_bandpass_filter
 
 
 def root_mean_square(samples, **kwargs):
@@ -57,6 +58,42 @@ def mean_normalized(samples, **kwargs):
 
 def sum_of_fft(samples, **kwargs):
     return sum(fft_pack.fft(samples))
+
+
+def alpha_energy(samples, **kwargs):
+    filtered = butter_bandpass_filter(samples, ALPHA_LOW, ALPHA_HIGH, 200)
+    return sum_of_fft(filtered)
+
+
+def beta_energy(samples, **kwargs):
+    filtered = butter_bandpass_filter(samples, BETA_LOW, BETA_HIGH, 200)
+    return sum_of_fft(filtered)
+
+
+def theta_energy(samples, **kwargs):
+    filtered = butter_bandpass_filter(samples, THETA_LOW, THETA_HIGH, 200)
+    return sum_of_fft(filtered)
+
+
+def delta_energy(samples, **kwargs):
+    filtered = butter_bandpass_filter(samples, DELTA_LOW, DELTA_HIGH, 200)
+    return sum_of_fft(filtered)
+
+
+def alpha_energy_ratio(samples, **kwargs):
+    return alpha_energy(samples) / (beta_energy(samples) + theta_energy(samples) + delta_energy(samples))
+
+
+def beta_energy_ratio(samples, **kwargs):
+    return beta_energy(samples) / (alpha_energy(samples) + theta_energy(samples) + delta_energy(samples))
+
+
+def theta_energy_ratio(samples, **kwargs):
+    return theta_energy(samples) / (alpha_energy(samples) + beta_energy(samples) + delta_energy(samples))
+
+
+def delta_energy_ratio(samples, **kwargs):
+    return delta_energy(samples) / (alpha_energy(samples) + beta_energy(samples) + theta_energy(samples))
 
 
 def callbacks():
