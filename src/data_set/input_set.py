@@ -24,8 +24,16 @@ def examinations_data_set(examinations, features_callbacks, window, **kwargs):
     return data_set
 
 
-def _calculate_data_set_for_examination(examination, features_callbacks, window=WINDOW_DEFAULT, **kwargs):
-    signals = [examination.psg.load_fpi_a2(), examination.psg.load_eog1_a2()]
+def _calculate_data_set_for_examination(examination, features_callbacks, window=WINDOW_DEFAULT,
+                                        normalized=True, **kwargs):
+    signals = [
+        examination.psg.load_o1_a2(),
+        examination.psg.load_eog1_a2()
+    ]
+    if normalized:
+        signals = [(signal - min(signal) / signal.ptp()) for signal in signals]
+        # import src.feature_pack.feature as f
+        # signals = [(signal / f.mean(signal)) for signal in signals]
     hypnogram = examination.hypnogram
     check_correctness(signals, hypnogram)
     if len(signals) != len(features_callbacks):
@@ -37,11 +45,10 @@ def _calculate_data_set_for_examination(examination, features_callbacks, window=
         window_hypnogram = hypnogram[i:i + window]
         if _has_unknown(window_hypnogram):
             continue
-        label = _find_class(window_hypnogram)
         feat = []
         for callbacks, signal in zip(features_callbacks, signals):
             for func in callbacks:
-                feat.append(func(signal[i:i+window], **kwargs))
+                feat.append(func(signal[i:i + window], **kwargs))
 
         calculated_features.append(
             (

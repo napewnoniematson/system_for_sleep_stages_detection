@@ -48,35 +48,31 @@ def median(samples, **kwargs):
     return stat.median(samples)
 
 
-# todo test
-def mean_normalized(samples, **kwargs):
-    mean_val = mean(samples)
-    min_val = min_peak(samples)
-    max_val = max_peak(samples)
-    return (mean_val - min_val) / (max_val - min_val)
+def energy(samples, **kwargs):
+    return sum(samples)
 
 
 def sum_of_fft(samples, **kwargs):
-    return sum(fft_pack.fft(samples))
+    return sum(fft_pack.fft(samples.copy()))
 
 
 def alpha_energy(samples, **kwargs):
-    filtered = butter_bandpass_filter(samples, ALPHA_LOW, ALPHA_HIGH, 200)
+    filtered = butter_bandpass_filter(samples.copy(), ALPHA_LOW, ALPHA_HIGH, 200)
     return sum_of_fft(filtered)
 
 
 def beta_energy(samples, **kwargs):
-    filtered = butter_bandpass_filter(samples, BETA_LOW, BETA_HIGH, 200)
+    filtered = butter_bandpass_filter(samples.copy(), BETA_LOW, BETA_HIGH, 200)
     return sum_of_fft(filtered)
 
 
 def theta_energy(samples, **kwargs):
-    filtered = butter_bandpass_filter(samples, THETA_LOW, THETA_HIGH, 200)
+    filtered = butter_bandpass_filter(samples.copy(), THETA_LOW, THETA_HIGH, 200)
     return sum_of_fft(filtered)
 
 
 def delta_energy(samples, **kwargs):
-    filtered = butter_bandpass_filter(samples, DELTA_LOW, DELTA_HIGH, 200)
+    filtered = butter_bandpass_filter(samples.copy(), DELTA_LOW, DELTA_HIGH, 200)
     return sum_of_fft(filtered)
 
 
@@ -97,5 +93,4 @@ def delta_energy_ratio(samples, **kwargs):
 
 
 def callbacks():
-    return [value, min_peak, max_peak, variance, spectrogram, mean, root_mean_square, median, mean_normalized,
-            sum_of_fft]
+    return [value, min_peak, max_peak, variance, spectrogram, mean, root_mean_square, median, sum_of_fft]
