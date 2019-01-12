@@ -1,9 +1,11 @@
 import math
 import statistics as stat
+import scipy.stats as sci_stat
 import scipy.signal as signal
 import scipy.fftpack as fft_pack
 from src.utils.util import *
 from src.filter.butterworth import butter_bandpass_filter
+from deprecated import deprecated
 
 
 def root_mean_square(samples, **kwargs):
@@ -26,8 +28,17 @@ def mean(samples, **kwargs):
     return stat.mean(samples)
 
 
+def harmonic_mean(samples, **kwargs):
+    inv_s = [1 / s for s in samples]
+    return len(inv_s) / sum(inv_s)
+
+
 def variance(samples, **kwargs):
     return stat.variance(samples)
+
+
+def variation(samples, **kwargs):
+    return sci_stat.variation(samples)
 
 
 def spectrogram(samples, **kwargs):
@@ -38,19 +49,32 @@ def spectrogram(samples, **kwargs):
         return signal.spectrogram(samples, fs=sampling_freq)
 
 
-def value(samples, **kwargs):
-    length = len(samples)
-    index = int(length / 2) + 1
-    return samples[index]
-
-
 def median(samples, **kwargs):
     return stat.median(samples)
 
 
 def energy(samples, **kwargs):
-    return sum(samples)
+    # powered_abs = [abs(s) for s in samples.copy()]  # publication
+    powered_abs = [abs(s) ** 2 for s in samples.copy()]  # internet
+    return sum(powered_abs)
 
+
+def sig_pow(samples, **kwargs):
+    e = energy(samples)
+    return (1 / len(samples)) * e
+
+
+def sig_pow_sk(samples, **kwargs):
+    return sig_pow(samples) ** 0.5
+
+
+def entropy(samples, **kwargs):
+    # x = [s**2 * math.log(s**2) for s in samples]  # publication
+    x = [s * math.log(s) for s in samples]  # internet
+    return -(sum(x))
+
+
+# FFT
 
 def _value_of_complex(cx):
     return math.sqrt(cx.real * cx.real + cx.imag * cx.imag)
@@ -60,10 +84,21 @@ def _value_of_complexes(cxs):
     return [_value_of_complex(cx) for cx in cxs]
 
 
+def _fft(samples):
+    # return fft_pack.fft(samples)[1:len(samples) // 2] # maybe half of fft is enough
+    return fft_pack.fft(samples)
+
+
+def _fft_window(samples):
+    w = signal.blackman(len(samples))
+    return _fft(samples * w)
+
+
 def _fft_energy(samples, **kwargs):
     f = fft_pack.fft(samples)
+    # f = fft_pack.rfft(samples)  # maybe rfft is better
     # vc = _value_of_complexes(f)
-    return sum(f)
+    return energy(f)
 
 
 def alpha_energy(samples, **kwargs):
