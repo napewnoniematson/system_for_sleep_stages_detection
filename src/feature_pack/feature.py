@@ -35,7 +35,7 @@ def spectrogram(samples, **kwargs):
         sampling_freq = kwargs[SAMPLING_FREQ]
     except KeyError:
         sampling_freq = SAMPLING_FREQ_DEFAULT
-    return signal.spectrogram(samples, fs=sampling_freq)
+        return signal.spectrogram(samples, fs=sampling_freq)
 
 
 def value(samples, **kwargs):
@@ -52,28 +52,38 @@ def energy(samples, **kwargs):
     return sum(samples)
 
 
-def sum_of_fft(samples, **kwargs):
-    return sum(fft_pack.fft(samples.copy()))
+def _value_of_complex(cx):
+    return math.sqrt(cx.real * cx.real + cx.imag * cx.imag)
+
+
+def _value_of_complexes(cxs):
+    return [_value_of_complex(cx) for cx in cxs]
+
+
+def _fft_energy(samples, **kwargs):
+    f = fft_pack.fft(samples)
+    # vc = _value_of_complexes(f)
+    return sum(f)
 
 
 def alpha_energy(samples, **kwargs):
     filtered = butter_bandpass_filter(samples.copy(), ALPHA_LOW, ALPHA_HIGH, 200)
-    return sum_of_fft(filtered)
+    return _fft_energy(filtered)
 
 
 def beta_energy(samples, **kwargs):
     filtered = butter_bandpass_filter(samples.copy(), BETA_LOW, BETA_HIGH, 200)
-    return sum_of_fft(filtered)
+    return _fft_energy(filtered)
 
 
 def theta_energy(samples, **kwargs):
     filtered = butter_bandpass_filter(samples.copy(), THETA_LOW, THETA_HIGH, 200)
-    return sum_of_fft(filtered)
+    return _fft_energy(filtered)
 
 
 def delta_energy(samples, **kwargs):
     filtered = butter_bandpass_filter(samples.copy(), DELTA_LOW, DELTA_HIGH, 200)
-    return sum_of_fft(filtered)
+    return _fft_energy(filtered)
 
 
 def alpha_energy_ratio(samples, **kwargs):
@@ -93,4 +103,4 @@ def delta_energy_ratio(samples, **kwargs):
 
 
 def callbacks():
-    return [value, min_peak, max_peak, variance, spectrogram, mean, root_mean_square, median, sum_of_fft]
+    return [value, min_peak, max_peak, variance, spectrogram, mean, root_mean_square, median]

@@ -18,7 +18,7 @@ def train_test_data(data_set, checked_examinations):
 
 
 def train_test_data_one_examination(examination, percentage=70):
-    split_index = int(len(examination) * percentage / 100)
+    split_index = int(len(examination) * (percentage / 100))
 
     training = examination[:split_index]
     test = examination[split_index:]
