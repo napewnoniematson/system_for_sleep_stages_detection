@@ -138,4 +138,4 @@ def delta_energy_ratio(samples, **kwargs):
 
 
 def callbacks():
-    return [value, min_peak, max_peak, variance, spectrogram, mean, root_mean_square, median]
+    return [min_peak, max_peak, variance, spectrogram, mean, root_mean_square, median]
