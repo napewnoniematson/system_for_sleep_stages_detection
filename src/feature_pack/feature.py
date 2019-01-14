@@ -69,8 +69,8 @@ def sig_pow_sk(samples, **kwargs):
 
 
 def entropy(samples, **kwargs):
-    # x = [s**2 * math.log(s**2) for s in samples]  # publication
-    x = [s * math.log(s) for s in samples]  # internet
+    x = [s**2 * math.log(s**2) for s in samples]  # publication
+    # x = [s * math.log(s) for s in samples]  # internet
     return -(sum(x))
 
 

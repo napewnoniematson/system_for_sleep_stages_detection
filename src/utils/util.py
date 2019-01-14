@@ -46,6 +46,9 @@ UNIVERSITE_DE_MONS_HYPNOGRAM_AASM = \
 UNIVERSITE_DE_MONS_HYPNOGRAM_RK = \
     "/home/pc/mgr/mgr_data/HypnogramR&K_{}.txt"
 
+PHYSIONET_DIR = '/home/pc/mgr/physionet'
+PHYSIONET_DIR_LOAD = PHYSIONET_DIR + '/{}'
+
 # AI
 FEATURE_NAME = "eeg_features"
 MODEL_FILE_EXTENSION = '.model'

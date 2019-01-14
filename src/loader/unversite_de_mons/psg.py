@@ -28,7 +28,7 @@ class PSG:
         logger.info(EEG_SIGNAL_SELECTION_START_INFO)
         channels_no = self.__get_channels_no()
         if self.__edf:
-            samples = np.zeros((len(channels_no), self.load_samples_amount()))
+            samples = np.zeros((len(channels_no), self.__load_samples_amount()))
             for i in range(len(channels_no)):
                 sample_no = channels_no[i]
                 samples[i, :] = self.__edf.readSignal(sample_no)
@@ -44,32 +44,38 @@ class PSG:
                 LOAD_EDF_EEG_FP2_A1_NO, LOAD_EDF_EEG_O2_A1_NO, LOAD_EDF_EEG_CZ2_A1_NO,
                 LOAD_EDF_EOG1_A2_NO, LOAD_EDF_EOG2_A2_NO]
 
-    def load_fpi_a2(self):
+    def __load_fpi_a2(self):
         return self.__signals[EEG_FPI_A2_NO]
 
-    def load_cz_a1(self):
+    def __load_cz_a1(self):
         return self.__signals[EEG_CZ_A1_NO]
 
-    def load_o1_a2(self):
+    def __load_o1_a2(self):
         return self.__signals[EEG_O1_A2_NO]
 
-    def load_fp2_a1(self):
+    def __load_fp2_a1(self):
         return self.__signals[EEG_FP2_A1_NO]
 
-    def load_o2_a1(self):
+    def __load_o2_a1(self):
         return self.__signals[EEG_O2_A1_NO]
 
-    def load_cz2_a1(self):
+    def __load_cz2_a1(self):
         return self.__signals[EEG_CZ2_A1_NO]
 
-    def load_eog1_a2(self):
+    def __load_eog1_a2(self):
         return self.__signals[EOG1_A2_NO]
 
-    def load_eog2_a2(self):
+    def __load_eog2_a2(self):
         return self.__signals[EOG2_A2_NO]
 
-    def load_frequency(self):
+    def __load_frequency(self):
         return self.__edf.getSampleFrequency(EEG_FPI_A2_NO) if self.__edf else 0
 
-    def load_samples_amount(self):
+    def __load_samples_amount(self):
         return self.__edf.getNSamples()[EEG_FPI_A2_NO]
+
+    def load_eeg(self):
+        self.__load_fp2_a1()
+
+    def load_eog(self):
+        self.__load_eog1_a2()

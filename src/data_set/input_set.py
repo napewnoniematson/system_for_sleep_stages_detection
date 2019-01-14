@@ -1,10 +1,15 @@
 from src.utils.util import *
-from src.model.examination import Examination
+from src.model.unversite_de_mons.examination import Examination as UDMExamination
+from src.model.physionet_sleep_cassette.examination import Examination as PhysioExamination
 from collections import Counter
 
 
-def load_examinations(examination_titles):
-    return [Examination(title) for title in examination_titles]
+def load_udm_examinations(examination_titles):
+    return [UDMExamination(title) for title in examination_titles]
+
+
+def load_physio_examinations(signal_titles, hypnogram_titles):
+    return [PhysioExamination(s, h) for s, h in zip(signal_titles, hypnogram_titles)]
 
 
 def check_correctness(signals, hypnogram):
@@ -15,20 +20,23 @@ def check_correctness(signals, hypnogram):
 
 def examinations_data_set(examinations, features_callbacks, window, **kwargs):
     data_set = []
+    temp_ctr = 1
     for examination in examinations:
+        print("Examination {}".format(temp_ctr))
         data_set.append(
             _calculate_data_set_for_examination(
                 examination, features_callbacks, window, **kwargs
             )
         )
+        temp_ctr += 1
     return data_set
 
 
 def _calculate_data_set_for_examination(examination, features_callbacks, window=WINDOW_DEFAULT,
                                         normalized=True, **kwargs):
     signals = [
-        examination.psg.load_o1_a2(),
-        examination.psg.load_eog1_a2()
+        examination.psg.load_eeg(),
+        examination.psg.load_eog()
     ]
     if normalized:
         signals = [(signal - min(signal) / signal.ptp()) for signal in signals]

@@ -1,5 +1,5 @@
-import src.loader.aasm as aasm
-from src.loader.psg import PSG
+import src.loader.unversite_de_mons.aasm as aasm
+from src.loader.unversite_de_mons.psg import PSG
 from src.utils.util import *
 
 
