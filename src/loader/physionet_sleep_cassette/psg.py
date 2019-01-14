@@ -12,6 +12,9 @@ EEG_EOG_FREQ = 100
 class PSG:
     def __init__(self, path):
         self.__edf = pyedflib.EdfReader(path)
+        self.__read_signals()
+
+    def __read_signals(self):
         self.__signals = np.zeros((IMPORTANT_SIGNALS_AMOUNT, self.__edf.getNSamples()[0]))
         for i in range(IMPORTANT_SIGNALS_AMOUNT):
             self.__signals[i, :] = self.__edf.readSignal(IMPORTANT_SIGNALS[i])

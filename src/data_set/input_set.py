@@ -1,6 +1,6 @@
 from src.utils.util import *
 from src.model.unversite_de_mons.examination import Examination as UDMExamination
-from src.model.physionet_sleep_cassette.examination import Examination as PhysioExamination
+from src.model.examination import Examination as PhysioExamination
 from collections import Counter
 
 

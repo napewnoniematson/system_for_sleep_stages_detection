@@ -5,14 +5,14 @@ class Classifier:
     def __init__(self, model):
         self.model = model.model
 
-    def evaluate_em(self, features_test, labels_test):
+    def evaluate(self, features_test, labels_test):
         val_loss, val_acc = self.model.evaluate(features_test, labels_test)
         return {
             "loss": val_loss,
             "accuracy": val_acc
         }
 
-    def evaluate(self, features_test, labels_test):
+    def evaluate2(self, features_test, labels_test):
         accuracy = 0
         predictions = self.classify(features_test)
         for p, l in zip(predictions, labels_test):
