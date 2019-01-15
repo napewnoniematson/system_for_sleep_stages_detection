@@ -9,14 +9,15 @@ import src.ai.k_nn.classifier as knn_c
 import src.ai.k_nn2.classifier as knn2_c
 from src.utils.util import *
 
-# udm_titles = ["subject{}".format(i + 1) for i in range(20)]
-# udm_exams = input_data.load_udm_examinations(udm_titles)
+udm_titles = ["subject{}".format(i + 1) for i in range(20)]
+udm_exams = input_data.load_udm_examinations(udm_titles)
 import time
 
-start = time.time()
-physio_hypnogram, physio_signals = titles.get(PHYSIONET_DIR)
-physio_exams = input_data.load_physio_examinations(physio_signals, physio_hypnogram)
-print("Loading physio data: ", start - time.time())
+
+# start = time.time()
+# physio_hypnogram, physio_signals = titles.get(PHYSIONET_DIR)
+# physio_exams = input_data.load_physio_examinations(physio_signals, physio_hypnogram)
+# print("Loading physio data: ", start - time.time())
 
 
 # titles = ["subject{}".format(i + 1) for i in range(1)]
@@ -208,17 +209,59 @@ def c7():
     print("c7 started")
     f = [
         [
+            features.alpha_energy, features.alpha_energy_ratio,
+            features.beta_energy, features.beta_energy_ratio,
+            features.theta_energy, features.theta_energy_ratio,
+            features.delta_energy, features.delta_energy_ratio
+        ],
+        [
+            features.energy, features.median, features.max_peak
+        ]
+    ]
+    window = 5 * 200
+    checked = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0]
+    data_set = input_data.examinations_data_set(udm_exams.copy(), f, window)
+    l_train, f_train, l_test, f_test = train_data.train_test_data(data_set, checked)
+    model = ann_m.Model(f_train, l_train, hidden1=32, hidden2=18, has_normalization=False, epochs=5)
+    model.train(f_train, l_train, epochs=5, batch_size=1024)
+    classifier = ann_c.Classifier(model)
+    evaluate = classifier.evaluate(f_test, l_test)
+    print(evaluate)
+    print(len(l_train))
+    print(l_train[0:100])
+    print(len(f_train))
+    print(f_train[0:100])
+
+
+@timer
+def c8():
+    print("c7 started")
+    f = [
+        [
             features.median, features.harmonic_mean, features.mean
         ],
         [
             features.harmonic_mean,
         ]
     ]
-    window = 5 * 100
-    checked = [0 if i % 4 == 0 else 1 for i in range(len(physio_exams))]
-    data_set = input_data.examinations_data_set(physio_exams.copy(), f, window)
+    window = 5 * 200
+    checked = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0]
+    data_set = input_data.examinations_data_set(udm_exams.copy(), f, window)
     l_train, f_train, l_test, f_test = train_data.train_test_data(data_set, checked)
+
     model = ann_m.Model(f_train, l_train, hidden1=32, hidden2=18, has_normalization=False, epochs=5)
     classifier = ann_c.Classifier(model)
+    print("ltrain == ftrain:", len(l_train) == len(f_train))
+    import time
+    for i in range(10):
+        print("START {} train".format(i))
+        b = i * 8865
+        c = b + 8865
+        feats = f_train[b:c]
+        labs = l_train[b:c]
+        print(len(feats), len(labs), len(labs) == len(feats))
+        model.train(feats, labs, epochs=5)
+        time.sleep(2)
+
     evaluate = classifier.evaluate(f_test, l_test)
     print(evaluate)

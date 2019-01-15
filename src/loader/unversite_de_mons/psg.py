@@ -75,7 +75,7 @@ class PSG:
         return self.__edf.getNSamples()[EEG_FPI_A2_NO]
 
     def load_eeg(self):
-        self.__load_fp2_a1()
+        return self.__load_fp2_a1()
 
     def load_eog(self):
-        self.__load_eog1_a2()
+        return self.__load_eog1_a2()

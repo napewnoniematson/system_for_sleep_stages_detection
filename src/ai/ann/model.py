@@ -11,7 +11,7 @@ class Model:
             self.__normalize()
         self.__make(hidden1=hidden1, hidden2=hidden2)
         self.__compile()
-        self.__train(epochs=epochs)
+        # self.__train(epochs=epochs)
 
     def __normalize(self):
         self.features = tf.keras.utils.normalize(self.features, axis=1)
@@ -32,8 +32,8 @@ class Model:
                            loss='sparse_categorical_crossentropy',
                            metrics=['accuracy'])
 
-    def __train(self, epochs):
-        self.model.fit(self.features, self.labels, epochs)
+    def train(self, f, l, epochs, batch_size=32):
+        self.model.fit(x=f, y=l, epochs=epochs, batch_size=batch_size)
 
     def save(self, file=MODEL_FILE):
         self.model.save(file)
