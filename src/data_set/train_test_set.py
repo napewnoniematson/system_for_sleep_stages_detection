@@ -17,18 +17,6 @@ def train_test_data(data_set, checked_examinations):
     return l_train, f_train, l_test, f_test
 
 
-def train_test_data_one_examination(examination, percentage=70):
-    split_index = int(len(examination) * (percentage / 100))
-
-    training = examination[:split_index]
-    test = examination[split_index:]
-
-    l_train, f_train = split_data_set_numpy(training)
-    l_test, f_test = split_data_set_numpy(test)
-
-    return l_train, f_train, l_test, f_test
-
-
 def split_data_set_numpy(data_set):
     import numpy as np
     l_data, f_data = _split_data_set(data_set)

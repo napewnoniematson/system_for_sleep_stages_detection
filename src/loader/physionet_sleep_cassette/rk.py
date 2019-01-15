@@ -17,9 +17,10 @@ class RK:
         self.__stages = [stage(i) for i in self.__stages]
 
     def __read_hypnogram(self):
-        self.hypnogram = np.zeros(int(self.__indices[-1] * 1000), np.int)
+        times = 100  # expert registered stage per 1 sec, 1 sec = 100 samples
+        self.hypnogram = np.zeros(int(self.__indices[-1] * times), np.int)
         for i in range(len(self.__stages) - 1):
-            self.hypnogram[int(self.__indices[i]) * 1000:int(self.__indices[i + 1]) * 1000] = self.__stages[i]
+            self.hypnogram[int(self.__indices[i]) * times:int(self.__indices[i + 1]) * times] = self.__stages[i]
 
 
 def unknown(i):

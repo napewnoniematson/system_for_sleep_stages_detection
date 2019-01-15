@@ -1,4 +1,5 @@
 from src.decorator.timer import timer
+import src.utils.timer as u_timer
 import src.loader.physionet_sleep_cassette.titles as titles
 import src.data_set.input_set as input_data
 import src.data_set.train_test_set as train_data
@@ -8,14 +9,12 @@ import src.ai.ann.classifier as ann_c
 import src.ai.k_nn.classifier as knn_c
 import src.ai.k_nn2.classifier as knn2_c
 from src.utils.util import *
-
+import src.data_set.data as data
+from src.file_system.directory_manager import *
 import time
 
-start = time.time()
 physio_hypnogram, physio_signals = titles.get(PHYSIONET_DIR)
-physio_exams = input_data.load_physio_examinations(physio_signals, physio_hypnogram)
-print("Loading physio data: ", start - time.time())
-
+create_main_directory()
 
 @timer
 def case_1():
@@ -216,3 +215,24 @@ def c7():
     classifier = ann_c.Classifier(model)
     evaluate = classifier.evaluate(f_test, l_test)
     print(evaluate)
+
+
+@timer
+def c8():
+    registered_time = u_timer.get_time()
+    create_data_directory(registered_time)
+    create_training_directory(registered_time)
+    create_test_directory(registered_time)
+    f = [[features.mean, features.median], [features.max_peak]]
+    window = 5 * 100
+    print("TRAINING: ")
+    for i in data.examinations_data_set(
+        [physio_signals[0]], [physio_hypnogram[0]], f, window, True, registered_time
+    ):
+        print(i)
+
+    print("TEST: ")
+    for i in data.examinations_data_set(
+        [physio_signals[1]], [physio_hypnogram[1]], f, window, False, registered_time
+    ):
+        print(i)
