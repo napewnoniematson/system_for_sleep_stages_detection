@@ -1,15 +1,10 @@
 from src.utils.util import *
-from src.model.unversite_de_mons.examination import Examination as UDMExamination
-from src.model.examination import Examination as PhysioExamination
+from src.model.examination import Examination
 from collections import Counter
 
 
-def load_udm_examinations(examination_titles):
-    return [UDMExamination(title) for title in examination_titles]
-
-
 def load_physio_examinations(signal_titles, hypnogram_titles):
-    return [PhysioExamination(s, h) for s, h in zip(signal_titles, hypnogram_titles)]
+    return [Examination(s, h) for s, h in zip(signal_titles, hypnogram_titles)]
 
 
 def check_correctness(signals, hypnogram):

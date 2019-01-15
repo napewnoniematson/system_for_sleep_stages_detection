@@ -9,18 +9,12 @@ import src.ai.k_nn.classifier as knn_c
 import src.ai.k_nn2.classifier as knn2_c
 from src.utils.util import *
 
-# udm_titles = ["subject{}".format(i + 1) for i in range(20)]
-# udm_exams = input_data.load_udm_examinations(udm_titles)
 import time
 
 start = time.time()
 physio_hypnogram, physio_signals = titles.get(PHYSIONET_DIR)
 physio_exams = input_data.load_physio_examinations(physio_signals, physio_hypnogram)
 print("Loading physio data: ", start - time.time())
-
-
-# titles = ["subject{}".format(i + 1) for i in range(1)]
-# exams = input_data.load_examinations(titles)
 
 
 @timer
