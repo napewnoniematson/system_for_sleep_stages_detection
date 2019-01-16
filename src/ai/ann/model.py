@@ -3,8 +3,7 @@ from src.utils.util import *
 
 
 class Model:
-    def __init__(self, input_amount, output_amount, hidden1=32, hidden2=18, has_normalization=False,
-                 epochs=EPOCHS_DEFAULT):
+    def __init__(self, input_amount, output_amount, hidden1=32, hidden2=18, has_normalization=False):
         self.input_amount = input_amount
         self.output_amount = output_amount
         if has_normalization:
@@ -31,15 +30,15 @@ class Model:
                            loss='sparse_categorical_crossentropy',
                            metrics=['accuracy'])
 
-    def train(self, features, labels, epochs):
-        self.model.fit(features, labels, epochs=epochs)
+    def train(self, features, labels, epochs, batch_size):
+        self.model.fit(features, labels, epochs=epochs, batch_size=batch_size)
 
-    def save(self, file=MODEL_FILE):
-        self.model.save(file)
+    def save(self, date):
+        self.model.save(MODEL_FILE_DIR.format(date))
 
     def load(self):
-        self.model = tf.keras.models.load_model(MODEL_FILE)
+        self.model = tf.keras.models.load_model()
 
     @staticmethod
-    def loads(file=MODEL_FILE):
+    def loads(file):
         return file, tf.keras.models.load_model(file)

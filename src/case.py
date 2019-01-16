@@ -16,7 +16,7 @@ import numpy as np
 
 physio_hypnogram, physio_signals = titles.get(PHYSIONET_DIR)
 create_main_directory()
-
+create_model_directory()
 
 @timer
 def case_1():
@@ -226,25 +226,26 @@ def c8():
     create_training_directory(registered_time)
     create_test_directory(registered_time)
     f = [[features.mean, features.median], [features.max_peak]]
-    window = 5 * 100
+    window = 100
     print("TRAINING: ")
     l = 0
     for i in f:
         l += len(i)
     print(l)
-    model = ann_m.Model(input_amount=l, output_amount=3, hidden1=32, hidden2=18, has_normalization=False, epochs=5)
+    model = ann_m.Model(input_amount=l, output_amount=3, hidden1=48, hidden2=27, has_normalization=False, epochs=5)
     cls = ann_c.Classifier(model)
     for data_set in data.examinations_data_set(
-            physio_signals[107:117], physio_hypnogram[107:117], f, window, True, registered_time
+            physio_signals[4:68], physio_hypnogram[4:68], f, window, True, registered_time
     ):
         f_train, l_train = data.split(data_set)
-        model.train(f_train, l_train, 5)
+        model.train(f_train, l_train, epochs=7, batch_size=256)
 
     print("TEST: ")
     for data_set in data.examinations_data_set(
-            physio_signals[65:67], physio_hypnogram[65:67], f, window, False, registered_time
+            physio_signals[120:130], physio_hypnogram[120:130], f, window, False, registered_time
     ):
         f_test, l_test = data.split(data_set)
         evaluate = cls.evaluate2(f_test, l_test)
         print(evaluate)
+    model.save(registered_time)
 
