@@ -12,9 +12,11 @@ from src.utils.util import *
 import src.data_set.data as data
 from src.file_system.directory_manager import *
 import time
+import numpy as np
 
 physio_hypnogram, physio_signals = titles.get(PHYSIONET_DIR)
 create_main_directory()
+
 
 @timer
 def case_1():
@@ -36,10 +38,10 @@ def case_1():
 
     f = [
         [
-            features.alpha_energy, features.alpha_energy_ratio,
-            features.beta_energy, features.beta_energy_ratio,
-            features.theta_energy, features.theta_energy_ratio,
-            features.delta_energy, features.delta_energy_ratio
+            features.alpha_fft_energy, features.alpha_fft_energy_ratio,
+            features.beta_fft_energy, features.beta_fft_energy_ratio,
+            features.theta_fft_energy, features.theta_fft_energy_ratio,
+            features.delta_fft_energy, features.delta_fft_energy_ratio
         ],
         [
             features.energy, features.median, features.max_peak
@@ -98,10 +100,10 @@ def case_3():
     """
     f = [
         [
-            features.alpha_energy, features.alpha_energy_ratio,
-            features.beta_energy, features.beta_energy_ratio,
-            features.theta_energy, features.theta_energy_ratio,
-            features.delta_energy, features.delta_energy_ratio
+            features.alpha_fft_energy, features.alpha_fft_energy_ratio,
+            features.beta_fft_energy, features.beta_fft_energy_ratio,
+            features.theta_fft_energy, features.theta_fft_energy_ratio,
+            features.delta_fft_energy, features.delta_fft_energy_ratio
         ],
         [
             features.energy, features.median, features.max_peak
@@ -124,10 +126,10 @@ def case_4():
     """
     f = [
         [
-            features.alpha_energy, features.alpha_energy_ratio,
-            features.beta_energy, features.beta_energy_ratio,
-            features.theta_energy, features.theta_energy_ratio,
-            features.delta_energy, features.delta_energy_ratio
+            features.alpha_fft_energy, features.alpha_fft_energy_ratio,
+            features.beta_fft_energy, features.beta_fft_energy_ratio,
+            features.theta_fft_energy, features.theta_fft_energy_ratio,
+            features.delta_fft_energy, features.delta_fft_energy_ratio
         ],
         [
             features.energy, features.median, features.max_peak
@@ -149,10 +151,10 @@ def case_5():
         """
     f = [
         [
-            features.alpha_energy, features.alpha_energy_ratio,
-            features.beta_energy, features.beta_energy_ratio,
-            features.theta_energy, features.theta_energy_ratio,
-            features.delta_energy, features.delta_energy_ratio
+            features.alpha_fft_energy, features.alpha_fft_energy_ratio,
+            features.beta_fft_energy, features.beta_fft_energy_ratio,
+            features.theta_fft_energy, features.theta_fft_energy_ratio,
+            features.delta_fft_energy, features.delta_fft_energy_ratio
         ],
         [
             features.energy, features.median, features.max_peak
@@ -174,10 +176,10 @@ def case_6():
     """
     f = [
         [
-            features.alpha_energy, features.alpha_energy_ratio,
-            features.beta_energy, features.beta_energy_ratio,
-            features.theta_energy, features.theta_energy_ratio,
-            features.delta_energy, features.delta_energy_ratio
+            features.alpha_fft_energy, features.alpha_fft_energy_ratio,
+            features.beta_fft_energy, features.beta_fft_energy_ratio,
+            features.theta_fft_energy, features.theta_fft_energy_ratio,
+            features.delta_fft_energy, features.delta_fft_energy_ratio
         ],
         [
             features.energy, features.median, features.max_peak
@@ -226,13 +228,23 @@ def c8():
     f = [[features.mean, features.median], [features.max_peak]]
     window = 5 * 100
     print("TRAINING: ")
-    for i in data.examinations_data_set(
-        [physio_signals[0]], [physio_hypnogram[0]], f, window, True, registered_time
+    l = 0
+    for i in f:
+        l += len(i)
+    print(l)
+    model = ann_m.Model(input_amount=l, output_amount=3, hidden1=32, hidden2=18, has_normalization=False, epochs=5)
+    cls = ann_c.Classifier(model)
+    for data_set in data.examinations_data_set(
+            physio_signals[107:117], physio_hypnogram[107:117], f, window, True, registered_time
     ):
-        print(i)
+        f_train, l_train = data.split(data_set)
+        model.train(f_train, l_train, 5)
 
     print("TEST: ")
-    for i in data.examinations_data_set(
-        [physio_signals[1]], [physio_hypnogram[1]], f, window, False, registered_time
+    for data_set in data.examinations_data_set(
+            physio_signals[65:67], physio_hypnogram[65:67], f, window, False, registered_time
     ):
-        print(i)
+        f_test, l_test = data.split(data_set)
+        evaluate = cls.evaluate2(f_test, l_test)
+        print(evaluate)
+

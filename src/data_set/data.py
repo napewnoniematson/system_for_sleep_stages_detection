@@ -1,7 +1,14 @@
+import numpy as np
 from src.utils.util import *
 from collections import Counter
 from src.model.examination import Examination
 import src.file_system.file_manager as file
+
+
+def split(data_set):
+    labels = np.array([i[0] for i in data_set])
+    features = np.array([i[1:] for i in data_set])
+    return features, labels
 
 
 def examinations_data_set(signal_titles, hypnogram_titles, features_callbacks, window, training, date, **kwargs):
@@ -11,8 +18,9 @@ def examinations_data_set(signal_titles, hypnogram_titles, features_callbacks, w
         data_set = _calculate_data_set_for_examination(
             examination, features_callbacks, window, **kwargs
         )
-        file.save(path.format(date, s[0:6]), data_set)
-        yield data_set
+        if data_set is not None:
+            file.save(path.format(date, s[0:6]), data_set)
+            yield data_set
 
 
 def _calculate_data_set_for_examination(examination, features_callbacks, window=WINDOW_DEFAULT,
@@ -27,7 +35,8 @@ def _calculate_data_set_for_examination(examination, features_callbacks, window=
     # sequence of classes registered by expert
     hypnogram = examination.hypnogram
     # check correctness of signals lengths
-    _check_correctness(signals, hypnogram, features_callbacks)
+    if _check_correctness(signals, hypnogram, features_callbacks) is False:
+        return None
     # preparing array of features
     begin, end = 0, _allowed_upper_bound(signals[0], window)
     calculated_features = []  # result container
@@ -51,10 +60,11 @@ def _calculate_data_set_for_examination(examination, features_callbacks, window=
 
 def _check_correctness(signals, hypnogram, features_callbacks):
     if len(signals) != len(features_callbacks):
-        raise Exception('Some signals don not have their feature callbacks')
+        return False
     for s in signals:
         if len(s) != len(hypnogram):
-            raise Exception("Hypnogram and signal length are not the same")
+            return False
+    return True
 
 
 def _normalize_signals(signals, normalized=True):
@@ -63,7 +73,7 @@ def _normalize_signals(signals, normalized=True):
 
 def _has_unknown(hypnogram):
     for h in hypnogram:
-        if h is UNKNOWN:
+        if h == UNKNOWN:
             return True
     return False
 

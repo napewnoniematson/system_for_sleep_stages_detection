@@ -3,23 +3,22 @@ from src.utils.util import *
 
 
 class Model:
-    def __init__(self, features_train, labels_train, hidden1=32, hidden2=18, has_normalization=False,
+    def __init__(self, input_amount, output_amount, hidden1=32, hidden2=18, has_normalization=False,
                  epochs=EPOCHS_DEFAULT):
-        self.features = features_train
-        self.labels = labels_train
+        self.input_amount = input_amount
+        self.output_amount = output_amount
         if has_normalization:
             self.__normalize()
         self.__make(hidden1=hidden1, hidden2=hidden2)
         self.__compile()
-        self.__train(epochs=epochs)
+        # self.__train(epochs=epochs)
 
     def __normalize(self):
         self.features = tf.keras.utils.normalize(self.features, axis=1)
 
     def __make(self, hidden1, hidden2):
-        features_amount = len(self.features[0])
-        input_shape = (features_amount,)
-        class_amount = 3  # AWAKE, REM+STAGE1, STAGE2+STAGE3
+        input_shape = (self.input_amount,)
+        class_amount = self.output_amount  # AWAKE, REM+STAGE1, STAGE2+STAGE3
 
         self.model = tf.keras.models.Sequential()
         self.model.add(tf.keras.layers.Flatten(input_shape=input_shape))
@@ -32,8 +31,8 @@ class Model:
                            loss='sparse_categorical_crossentropy',
                            metrics=['accuracy'])
 
-    def __train(self, epochs):
-        self.model.fit(self.features, self.labels, epochs)
+    def train(self, features, labels, epochs):
+        self.model.fit(features, labels, epochs=epochs)
 
     def save(self, file=MODEL_FILE):
         self.model.save(file)

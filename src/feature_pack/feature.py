@@ -101,40 +101,40 @@ def _fft_energy(samples, **kwargs):
     return energy(f)
 
 
-def alpha_energy(samples, **kwargs):
+def alpha_fft_energy(samples, **kwargs):
     filtered = butter_bandpass_filter(samples.copy(), ALPHA_LOW, ALPHA_HIGH, 200)
     return _fft_energy(filtered)
 
 
-def beta_energy(samples, **kwargs):
+def beta_fft_energy(samples, **kwargs):
     filtered = butter_bandpass_filter(samples.copy(), BETA_LOW, BETA_HIGH, 200)
     return _fft_energy(filtered)
 
 
-def theta_energy(samples, **kwargs):
+def theta_fft_energy(samples, **kwargs):
     filtered = butter_bandpass_filter(samples.copy(), THETA_LOW, THETA_HIGH, 200)
     return _fft_energy(filtered)
 
 
-def delta_energy(samples, **kwargs):
+def delta_fft_energy(samples, **kwargs):
     filtered = butter_bandpass_filter(samples.copy(), DELTA_LOW, DELTA_HIGH, 200)
     return _fft_energy(filtered)
 
 
-def alpha_energy_ratio(samples, **kwargs):
-    return alpha_energy(samples) / (beta_energy(samples) + theta_energy(samples) + delta_energy(samples))
+def alpha_fft_energy_ratio(samples, **kwargs):
+    return alpha_fft_energy(samples) / (beta_fft_energy(samples) + theta_fft_energy(samples) + delta_fft_energy(samples))
 
 
-def beta_energy_ratio(samples, **kwargs):
-    return beta_energy(samples) / (alpha_energy(samples) + theta_energy(samples) + delta_energy(samples))
+def beta_fft_energy_ratio(samples, **kwargs):
+    return beta_fft_energy(samples) / (alpha_fft_energy(samples) + theta_fft_energy(samples) + delta_fft_energy(samples))
 
 
-def theta_energy_ratio(samples, **kwargs):
-    return theta_energy(samples) / (alpha_energy(samples) + beta_energy(samples) + delta_energy(samples))
+def theta_fft_energy_ratio(samples, **kwargs):
+    return theta_fft_energy(samples) / (alpha_fft_energy(samples) + beta_fft_energy(samples) + delta_fft_energy(samples))
 
 
-def delta_energy_ratio(samples, **kwargs):
-    return delta_energy(samples) / (alpha_energy(samples) + beta_energy(samples) + theta_energy(samples))
+def delta_fft_energy_ratio(samples, **kwargs):
+    return delta_fft_energy(samples) / (alpha_fft_energy(samples) + beta_fft_energy(samples) + theta_fft_energy(samples))
 
 
 def callbacks():
