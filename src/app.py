@@ -1,7 +1,10 @@
 from src.logger.messages import *
 import src.logger.logger as logger
-import src.case as cu
+import src.case as test_case
 
 if __name__ == '__main__':
     logger.info(START_APP)
-    cu.c8()
+    # print(test_case.case_2())
+    # print(test_case.case_4())
+    # print(test_case.case_3())
+    # print(test_case.case_5())

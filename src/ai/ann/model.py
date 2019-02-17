@@ -3,11 +3,9 @@ from src.utils.util import *
 
 
 class Model:
-    def __init__(self, input_amount, output_amount, hidden1=32, hidden2=18, has_normalization=False):
+    def __init__(self, input_amount, output_amount, hidden1=32, hidden2=18):
         self.input_amount = input_amount
         self.output_amount = output_amount
-        if has_normalization:
-            self.__normalize()
         self.__make(hidden1=hidden1, hidden2=hidden2)
         self.__compile()
         # self.__train(epochs=epochs)
