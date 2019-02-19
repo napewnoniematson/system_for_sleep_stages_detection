@@ -8,3 +8,4 @@ if __name__ == '__main__':
     # print(test_case.case_4())
     # print(test_case.case_3())
     # print(test_case.case_5())
+    print(test_case.case_5_reworked())

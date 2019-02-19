@@ -6,6 +6,7 @@ import src.ai.ann.model as ann_m
 import src.ai.ann.classifier as ann_c
 import src.data_set.data as data
 from src.file_system.directory_manager import *
+from src.model.ann_model_config import ANNModelConfig
 
 physio_hypnogram, physio_signals = titles.get(PHYSIONET_DIR)
 training_hypnogram, training_signals, test_hypnogram, test_signals = [], [], [], []
@@ -21,19 +22,7 @@ print(len(test_signals))
 create_main_directory()
 create_model_directory()
 
-default_model_config = {
-    'input_amount': 256,
-    'output_amount': 3,
-    'hidden1': 32,
-    'hidden': 18,
-    'has_normalization': False,
-    # activation1
-    # activation2
-    # activation3
-    # optimizer etc
-    'epochs': 5,
-    'batch_size': 256
-}
+default_model_config = ANNModelConfig()
 
 
 def __case(features_callbacks, window, model_config=default_model_config):
@@ -47,8 +36,10 @@ def __case(features_callbacks, window, model_config=default_model_config):
     input_amount = 0
     for callback in features_callbacks:
         input_amount += len(callback)
+    model_config.input_amount = input_amount
     # prepare model
-    model = ann_m.Model(input_amount=input_amount, output_amount=3, hidden1=32, hidden2=18)
+    print(model_config)
+    model = ann_m.Model(model_config)
     # prepare classifier
     cls = ann_c.Classifier(model)
     # training part - calculate features + train model
@@ -57,19 +48,19 @@ def __case(features_callbacks, window, model_config=default_model_config):
             training_signals, training_hypnogram, features_callbacks, window, True, registered_time
     ):
         f_train, l_train = data.split(data_set)
-        model.train(f_train, l_train, epochs=7, batch_size=256)
+        model.train(f_train, l_train)
         train_counter += 1
         print("FINISHED {}/{}".format(train_counter, len(training_signals)))
     # testing part - calculate features + evaluate model
+    print("EVALUATING")
     evaluates = []
     for data_set in data.examinations_data_set(
             test_signals, test_hypnogram, features_callbacks, window, False, registered_time
     ):
         f_test, l_test = data.split(data_set)
-        evaluate = cls.evaluate2(f_test, l_test)
+        evaluate = cls.evaluate2(f_test, l_test, model_config.output_amount)
         print(evaluate)
         evaluates.append(evaluate)
-        print("FINISHED {}/{}".format(len(evaluates), len(test_signals)))
     # save model
     model.save(registered_time)
     return {
@@ -82,6 +73,22 @@ def __case(features_callbacks, window, model_config=default_model_config):
     }
 
 
+# 122/31
+@timer
+def case_5_reworked():
+    model_config = ANNModelConfig()
+    features_callbacks = [
+        [
+            features.energy, features.entropy, features.variation, features.root_mean_square
+        ],
+        [
+        ]
+    ]
+    window = 300
+    return __case(features_callbacks=features_callbacks, window=window, model_config=model_config)
+
+
+# 135/10
 @timer
 def case_2():
     features_callbacks = [
