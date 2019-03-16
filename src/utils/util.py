@@ -3,6 +3,7 @@ UNKNOWN = -1
 AWAKE = 0
 REM = 1
 NON_REM = 2
+MOVEMENT_TIME = 3
 
 # RHYTHM FREQ
 ALPHA_LOW = 8
@@ -27,6 +28,9 @@ SAMPLING_FREQ = 'sampling_freq'
 
 PHYSIONET_DIR = '/home/pc/mgr/physionet'
 PHYSIONET_DIR_LOAD = PHYSIONET_DIR + '/{}'
+
+DE_MONS_DIR = '/home/pc/mgr/de_mons'
+DE_MONS_LOAD = DE_MONS_DIR + '/{}'
 
 LOG_DATE_TIME_FORMAT = '%Y-%m-%d %H:%M:%S'
 

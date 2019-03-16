@@ -5,5 +5,9 @@ from src.utils.util import *
 
 class Examination:
     def __init__(self, signal_title, hypnogram_title):
-        self.psg = PSG(PHYSIONET_DIR_LOAD.format(signal_title))
-        self.hypnogram = RK(PHYSIONET_DIR_LOAD.format(hypnogram_title)).hypnogram
+        if 'subject' in signal_title:
+            print('demons')
+        else:
+            print('physionet')
+        # self.psg = PSG(PHYSIONET_DIR_LOAD.format(signal_title))
+        # self.hypnogram = RK(PHYSIONET_DIR_LOAD.format(hypnogram_title)).hypnogram

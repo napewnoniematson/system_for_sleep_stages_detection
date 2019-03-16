@@ -8,7 +8,15 @@ import src.data_set.data as data
 from src.file_system.directory_manager import *
 from src.model.ann_model_config import ANNModelConfig
 
-physio_hypnogram, physio_signals = titles.get(PHYSIONET_DIR)
+physio_hypnogram, physio_signals = titles.get_physio_net(PHYSIONET_DIR)
+de_mons_hypnogram, de_mons_signals = titles.get_de_mons(DE_MONS_DIR)
+print(de_mons_signals)
+print(de_mons_hypnogram)
+
+import src.loader.physionet_sleep_cassette.rk as rk
+r = rk.RK(PHYSIONET_DIR_LOAD.format("SC4022EJ-Hypnogram.edf"))
+print(r.hypnogram)
+
 training_hypnogram, training_signals, test_hypnogram, test_signals = [], [], [], []
 for i in range(len(physio_signals)):
     if i % 16 == 0:
@@ -85,6 +93,21 @@ def case_5_reworked():
         ]
     ]
     window = 300
+    return __case(features_callbacks=features_callbacks, window=window, model_config=model_config)
+
+
+@timer
+def case_4_reworked():
+    model_config = ANNModelConfig()
+    features_callbacks = [
+        [
+            features.root_mean_square, features.variance
+        ],
+        [
+
+        ]
+    ]
+    window = 500
     return __case(features_callbacks=features_callbacks, window=window, model_config=model_config)
 
 

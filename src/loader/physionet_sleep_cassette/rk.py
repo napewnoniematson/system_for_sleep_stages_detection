@@ -24,9 +24,13 @@ class RK:
 
 
 def unknown(i):
-    if 'Movement time' in i:
+    if movement_time(i):
         return True
     return i.split(' ')[2] is '?'
+
+
+def movement_time(i):
+    return 'Movement time' in i
 
 
 def awake(i):
