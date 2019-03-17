@@ -29,3 +29,7 @@ def create_training_directory(date):
 
 def create_test_directory(date):
     _create_directory(TEST_FEATURE_DIR.format(date))
+
+
+def create_predictions_directory(date):
+    _create_directory(PREDICTIONS_DIR.format(date))

@@ -21,13 +21,13 @@ class Classifier:
             # print("p = %d l = %d" % (p,l))
             if p == l:
                 accuracy += 1
-        print(predictions)
+        # print(predictions)
         return {
             "accuracy": accuracy / len(labels_test),
             "matrix": matrix
             # "original_hypnogram": labels_test,
             # "classify_hypnogram": predictions
-        }
+        }, predictions
 
     def classify(self, features):
         predictions = self.model.predict([features])

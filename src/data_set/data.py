@@ -19,7 +19,7 @@ def examinations_data_set(signal_titles, hypnogram_titles, features_callbacks, w
             examination, features_callbacks, window, **kwargs
         )
         if data_set is not None:
-            file.save(path.format(date, s[0:6]), data_set)
+            file.save(path.format(date, s[0:-4]), data_set)
             yield data_set
 
 

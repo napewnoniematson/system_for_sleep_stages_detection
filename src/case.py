@@ -5,30 +5,31 @@ import src.feature_pack.feature as features
 import src.ai.ann.model as ann_m
 import src.ai.ann.classifier as ann_c
 import src.data_set.data as data
+import src.file_system.file_manager as file_m
 from src.file_system.directory_manager import *
 from src.model.ann_model_config import ANNModelConfig
 
 physio_hypnogram, physio_signals = titles.get_physio_net(PHYSIONET_DIR)
 de_mons_hypnogram, de_mons_signals = titles.get_de_mons(DE_MONS_DIR)
-print(de_mons_signals)
-print(de_mons_hypnogram)
-
-import src.model.examination as e
-
-ex = e.Examination(de_mons_signals[0], de_mons_hypnogram[0])
-print(len(ex.psg.load_eeg()))
-print(len(ex.hypnogram))
 
 training_hypnogram, training_signals, test_hypnogram, test_signals = [], [], [], []
-for i in range(len(physio_signals)):
-    if i % 16 == 0:
-        test_hypnogram.append(physio_hypnogram[i])
-        test_signals.append(physio_signals[i])
+# # PHYSIO
+# for i in range(len(physio_signals)):
+#     if i % 16 == 0:
+#         test_hypnogram.append(physio_hypnogram[i])
+#         test_signals.append(physio_signals[i])
+#     else:
+#         training_hypnogram.append(physio_hypnogram[i])
+#         training_signals.append(physio_signals[i])
+
+# DE MONS
+for i in range(len(de_mons_signals)):
+    if i % 6 == 0:
+        test_hypnogram.append(de_mons_hypnogram[i])
+        test_signals.append(de_mons_signals[i])
     else:
-        training_hypnogram.append(physio_hypnogram[i])
-        training_signals.append(physio_signals[i])
-print(len(training_signals))
-print(len(test_signals))
+        training_hypnogram.append(de_mons_hypnogram[i])
+        training_signals.append(de_mons_signals[i])
 create_main_directory()
 create_model_directory()
 
@@ -42,6 +43,7 @@ def __case(features_callbacks, window, model_config=default_model_config):
     create_data_directory(registered_time)
     create_training_directory(registered_time)
     create_test_directory(registered_time)
+    create_predictions_directory(registered_time)
     # amount of features
     input_amount = 0
     for callback in features_callbacks:
@@ -64,16 +66,19 @@ def __case(features_callbacks, window, model_config=default_model_config):
     # testing part - calculate features + evaluate model
     print("EVALUATING")
     evaluates = []
+    ctr = 0
     for data_set in data.examinations_data_set(
             test_signals, test_hypnogram, features_callbacks, window, False, registered_time
     ):
         f_test, l_test = data.split(data_set)
-        evaluate = cls.evaluate2(f_test, l_test, model_config.output_amount)
-        print(evaluate)
+        evaluate, predictions_arr = cls.evaluate2(f_test, l_test, model_config.output_amount)
+        # print(evaluate)
         evaluates.append(evaluate)
+        file_m.save(PREDICTIONS_FILE_DIR.format(registered_time, test_signals[ctr][0:-4]), [predictions_arr])
+        ctr = ctr + 1
     # save model
     model.save(registered_time)
-    return {
+    result = {
         'features_callbacks': features_callbacks,
         'window': window,
         'model_config': model_config,
@@ -81,6 +86,8 @@ def __case(features_callbacks, window, model_config=default_model_config):
         'tested': len(evaluates),
         'evaluates': evaluates
     }
+    file_m.save(RESULT_FILE_DIR.format(registered_time), result.items())
+    return result
 
 
 # 122/31
