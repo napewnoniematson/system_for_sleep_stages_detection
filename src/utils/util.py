@@ -30,7 +30,7 @@ PHYSIONET_DIR = '/home/pc/mgr/physionet'
 PHYSIONET_DIR_LOAD = PHYSIONET_DIR + '/{}'
 
 DE_MONS_DIR = '/home/pc/mgr/de_mons'
-DE_MONS_LOAD = DE_MONS_DIR + '/{}'
+DE_MONS_DIR_LOAD = DE_MONS_DIR + '/{}'
 
 LOG_DATE_TIME_FORMAT = '%Y-%m-%d %H:%M:%S'
 

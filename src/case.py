@@ -13,9 +13,11 @@ de_mons_hypnogram, de_mons_signals = titles.get_de_mons(DE_MONS_DIR)
 print(de_mons_signals)
 print(de_mons_hypnogram)
 
-import src.loader.physionet_sleep_cassette.rk as rk
-r = rk.RK(PHYSIONET_DIR_LOAD.format("SC4022EJ-Hypnogram.edf"))
-print(r.hypnogram)
+import src.model.examination as e
+
+ex = e.Examination(de_mons_signals[0], de_mons_hypnogram[0])
+print(len(ex.psg.load_eeg()))
+print(len(ex.hypnogram))
 
 training_hypnogram, training_signals, test_hypnogram, test_signals = [], [], [], []
 for i in range(len(physio_signals)):
