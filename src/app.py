@@ -8,6 +8,6 @@ if __name__ == '__main__':
     # print(test_case.case_4())
     # print(test_case.case_3())
     # print(test_case.case_5())
-    print(test_case.case_5_reworked())
-    # print(test_case.case_4_reworkedcas())
-
+    # print(test_case.case_5_reworked())
+    # print(test_case.case_4_reworked())
+    print(test_case.case_6_reworked())
