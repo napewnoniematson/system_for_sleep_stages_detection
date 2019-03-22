@@ -10,11 +10,11 @@ def plot(samples_indices, samples_values, classes, hypnogram):
     plt.show()
 
 
-def plot_confusion_matrix(cm, classes, normalize=False, title='Confusion matrix', cmap=plt.cm.Reds):
+def _prepare_plot_confusion_matrix(cm, classes, normalize=False, title='Confusion matrix', cmap=plt.cm.Reds):
     if normalize:
         cm = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
 
-    print(cm)
+    # print(cm)
     plt.imshow(cm, interpolation='nearest', cmap=cmap)
     plt.title(title)
     plt.colorbar()
@@ -29,3 +29,18 @@ def plot_confusion_matrix(cm, classes, normalize=False, title='Confusion matrix'
     plt.ylabel('True label')
     plt.xlabel('Predicted label')
     plt.tight_layout()
+    # plt.show()
+    # plt.savefig(file_path)
+    return plt
+
+
+def show_confusion_matrix(cm, classes, normalize=False, title='Confusion matrix', cmap=plt.cm.Reds):
+    s_plt = _prepare_plot_confusion_matrix(cm, classes, normalize, title, cmap)
+    s_plt.show()
+    return s_plt
+
+
+def save_to_file_confusion_matrix(cm, classes, file_path, normalize=False, title='Confusion matrix', cmap=plt.cm.Reds):
+    f_plt = _prepare_plot_confusion_matrix(cm, classes, normalize, title, cmap)
+    f_plt.savefig(file_path)
+    return f_plt

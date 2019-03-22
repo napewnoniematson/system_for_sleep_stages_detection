@@ -1,4 +1,9 @@
+import time
+
+import numpy as np
+
 from src.decorator.timer import timer
+import src.figure as fig
 import src.utils.timer as u_timer
 import src.loader.physionet_sleep_cassette.titles as titles
 import src.feature_pack.feature as features
@@ -33,7 +38,7 @@ def _split_train_test(signals, hypnograms, x):
 
 
 def _physio_split_data():
-    return _split_train_test(physio_signals, physio_hypnogram, 16)
+    return _split_train_test(physio_signals, physio_hypnogram, 8)
 
 
 def _de_mons_split_data():
@@ -75,6 +80,7 @@ def __case(source_no, features_callbacks, window, model_config=default_model_con
     cls = ann_c.Classifier(model)
     # training part - calculate features + train model
     train_counter = 0
+    start_training_time = time.time()
     for data_set in data.examinations_data_set(
             training_signals, training_hypnogram, features_callbacks, window, True, registered_time
     ):
@@ -83,9 +89,11 @@ def __case(source_no, features_callbacks, window, model_config=default_model_con
         train_counter += 1
         print("FINISHED {}/{}".format(train_counter, len(training_signals)))
     # testing part - calculate features + evaluate model
+    stop_training_time = time.time()
     print("EVALUATING")
     evaluates = []
     ctr = 0
+    start_testing_time = time.time()
     for data_set in data.examinations_data_set(
             test_signals, test_hypnogram, features_callbacks, window, False, registered_time
     ):
@@ -95,8 +103,19 @@ def __case(source_no, features_callbacks, window, model_config=default_model_con
         evaluates.append(evaluate)
         file_m.save(PREDICTIONS_FILE_DIR.format(registered_time, test_signals[ctr][0:-4]), [predictions_arr])
         ctr = ctr + 1
+    stop_testing_time = time.time()
     # save model
     model.save(registered_time)
+    # save confusion matrix files
+    eval_ctr = 0
+    for ev in evaluates:
+        cm = np.asarray(ev['matrix'])
+        fig.save_to_file_confusion_matrix(cm, ['AWAKE', 'REM', 'NREM'],
+                                          PLOT_IMAGE_FILE_DIR.format(registered_time, eval_ctr), normalize=False).clf()
+        fig.save_to_file_confusion_matrix(cm, ['AWAKE', 'REM', 'NREM'],
+                                          NORMALIZED_PLOT_IMAGE_FILE_DIR.format(registered_time, eval_ctr),
+                                          normalize=True).clf()
+        eval_ctr = eval_ctr + 1
     result = {
         'source_no': source_no,
         'features_callbacks': features_callbacks,
@@ -104,6 +123,8 @@ def __case(source_no, features_callbacks, window, model_config=default_model_con
         'model_config': model_config,
         'trained': train_counter,
         'tested': len(evaluates),
+        'training_time': stop_training_time - start_training_time,
+        'testing_time': stop_testing_time - start_testing_time,
         'evaluates': evaluates
     }
     file_m.save(RESULT_FILE_DIR.format(registered_time), result.items())
@@ -168,19 +189,6 @@ def case_7_reworked():
     return __case(source_no=DE_MONS, features_callbacks=features_callbacks, window=window, model_config=model_config)
 
 
-def case_6_reworked():
-    model_config = ANNModelConfig()
-    features_callbacks = [
-        [
-            pyeeg_features.hurst
-        ],
-        [
-        ]
-    ]
-    window = 200
-    return __case(source_no=DE_MONS, features_callbacks=features_callbacks, window=window, model_config=model_config)
-
-
 # 122/31
 @timer
 def case_5_reworked():
@@ -209,3 +217,172 @@ def case_4_reworked():
     ]
     window = 500
     return __case(source_no=DE_MONS, features_callbacks=features_callbacks, window=window, model_config=model_config)
+
+
+def case_pyeeg_5():
+    """
+    seems to be good
+    """
+    model_config = ANNModelConfig()
+    features_callbacks = [
+        [
+            pyeeg_features.petrosian_fractal_dimension
+        ],
+        [
+        ]
+    ]
+    window = 200
+    return __case(source_no=DE_MONS, features_callbacks=features_callbacks, window=window, model_config=model_config)
+
+
+def case_pyeeg_6():
+    model_config = ANNModelConfig()
+    features_callbacks = [
+        [
+            pyeeg_features.fisher_info
+        ],
+        [
+        ]
+    ]
+    window = 200
+    return __case(source_no=DE_MONS, features_callbacks=features_callbacks, window=window, model_config=model_config)
+
+
+@timer
+def case_pyeeg_7():
+    """time consuming, but good?"""
+    model_config = ANNModelConfig()
+    features_callbacks = [
+        [
+            pyeeg_features.permutation_entropy
+        ],
+        [
+        ]
+    ]
+    window = 200
+    return __case(source_no=DE_MONS, features_callbacks=features_callbacks, window=window, model_config=model_config)
+
+
+def case_pyeeg_9():
+    """fast"""
+    model_config = ANNModelConfig()
+    features_callbacks = [
+        [
+            pyeeg_features.svd_entropy
+        ],
+        [
+        ]
+    ]
+    window = 200
+    return __case(source_no=DE_MONS, features_callbacks=features_callbacks, window=window, model_config=model_config)
+
+
+def case_pyeeg_12():
+    """
+    seems to be good (can not detect REM / check 2019.03.20 09:40)
+    PHYSIO
+    """
+    model_config = ANNModelConfig()
+    features_callbacks = [
+        [
+            pyeeg_features.petrosian_fractal_dimension
+        ],
+        [
+        ]
+    ]
+    window = 200
+    return __case(source_no=PHYSIO, features_callbacks=features_callbacks, window=window, model_config=model_config)
+
+
+def case_pyeeg_13():
+    """
+    seems to be good
+    PHYSIO
+    """
+    model_config = ANNModelConfig()
+    features_callbacks = [
+        [
+            pyeeg_features.petrosian_fractal_dimension, features.root_mean_square, features.variance
+        ],
+        [
+        ]
+    ]
+    window = 200
+    return __case(source_no=PHYSIO, features_callbacks=features_callbacks, window=window, model_config=model_config)
+
+
+def case_pyeeg_14():
+    """
+    seems to be good
+    PHYSIO
+    """
+    model_config = ANNModelConfig()
+    features_callbacks = [
+        [
+            pyeeg_features.petrosian_fractal_dimension, features.root_mean_square, features.variance
+        ],
+        [
+        ]
+    ]
+    window = 200
+    return __case(source_no=DE_MONS, features_callbacks=features_callbacks, window=window, model_config=model_config)
+
+
+def case_pyeeg_15():
+    model_config = ANNModelConfig()
+    features_callbacks = [
+        [
+            pyeeg_features.power_delta, pyeeg_features.power_theta, pyeeg_features.power_alpha,
+            pyeeg_features.power_beta, pyeeg_features.power_delta_ratio, pyeeg_features.power_theta_ratio,
+            pyeeg_features.power_alpha_ratio, pyeeg_features.power_beta_ratio
+        ],
+        [
+        ]
+    ]
+    window = 200
+    return __case(source_no=DE_MONS, features_callbacks=features_callbacks, window=window, model_config=model_config)
+
+
+def case_pyeeg_16():
+    model_config = ANNModelConfig()
+    features_callbacks = [
+        [
+            pyeeg_features.power_delta, pyeeg_features.power_theta, pyeeg_features.power_alpha,
+            pyeeg_features.power_beta, pyeeg_features.power_delta_ratio, pyeeg_features.power_theta_ratio,
+            pyeeg_features.power_alpha_ratio, pyeeg_features.power_beta_ratio
+        ],
+        [
+        ]
+    ]
+    window = 200
+    return __case(source_no=PHYSIO, features_callbacks=features_callbacks, window=window, model_config=model_config)
+
+
+def case_pyeeg_17():
+    model_config = ANNModelConfig()
+    features_callbacks = [
+        [
+            # features.variance, features.root_mean_square, features.median, pyeeg_features.petrosian_fractal_dimension
+            pyeeg_features.petrosian_fractal_dimension, features.root_mean_square, features.variance
+
+        ],
+        [
+            # features.median#, features.root_mean_square, features.variance, pyeeg_features.petrosian_fractal_dimension
+        ]
+    ]
+    window = 200
+    return __case(source_no=PHYSIO, features_callbacks=features_callbacks, window=window, model_config=model_config)
+
+
+def case_pyeeg_18():
+    model_config = ANNModelConfig()
+    features_callbacks = [
+        [
+            pyeeg_features.hjorth_mobility, pyeeg_features.hjorth_complexity
+
+        ],
+        [
+        ]
+    ]
+    window = 100
+    return __case(source_no=PHYSIO, features_callbacks=features_callbacks, window=window, model_config=model_config)
