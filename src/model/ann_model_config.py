@@ -3,6 +3,7 @@ import tensorflow as tf
 
 class ANNModelConfig:
     """
+
     Model config class for ai ann machine learning\n
     Default values:
     input_amount = 256,

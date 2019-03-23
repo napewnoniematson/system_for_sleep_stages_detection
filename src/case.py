@@ -12,20 +12,30 @@ import src.ai.ann.model as ann_m
 import src.ai.ann.classifier as ann_c
 import src.data_set.data as data
 import src.file_system.file_manager as file_m
+import src.diagnostic_reliability as dr
 from src.file_system.directory_manager import *
 from src.model.ann_model_config import ANNModelConfig
 
+# create main directories
 create_main_directory()
 create_model_directory()
-
+# create default ANN model
 default_model_config = ANNModelConfig()
-
+# load name list of available files
 physio_hypnogram, physio_signals = titles.get_physio_net(PHYSIONET_DIR)
 de_mons_hypnogram, de_mons_signals = titles.get_de_mons(DE_MONS_DIR)
 
 
 def _split_train_test(signals, hypnograms, x):
-    """signals/hypnograms split to test per x rest is training"""
+    """
+    Split signal and hypnogram to training and testing sets
+
+    :param signals: list of signals (names)
+    :param hypnograms: list of hypnogram (names)
+    :param x: signal / hypnogram which is multiple of x is treated as train signal / hypnogram,
+     rest are treated as training signal / hypnogram
+    :return: training_hypnogram, training_signals, test_hypnogram, test_signals
+    """
     training_hypnogram, training_signals, test_hypnogram, test_signals = [], [], [], []
     for i in range(len(signals)):
         if i % x == 0:
@@ -38,10 +48,20 @@ def _split_train_test(signals, hypnograms, x):
 
 
 def _physio_split_data():
+    """
+    Split signal and hypnogram to training and testing sets for physionet data
+
+    :return: training_hypnogram, training_signals, test_hypnogram, test_signals
+    """
     return _split_train_test(physio_signals, physio_hypnogram, 8)
 
 
 def _de_mons_split_data():
+    """
+    Split signal and hypnogram to training and testing sets for 'de mons' data
+
+    :return: training_hypnogram, training_signals, test_hypnogram, test_signals
+    """
     return _split_train_test(de_mons_signals, de_mons_hypnogram, 6)
 
 
@@ -51,6 +71,12 @@ DE_MONS = 1
 
 
 def _choose_data(source_no):
+    """
+    Function allow choosing input data by passing number parameter
+
+    :param source_no: number which represent source with data, available PHYSIO = 0 DE_MONS = 1
+    :return: training_hypnogram, training_signals, test_hypnogram, test_signals
+    """
     if PHYSIO == source_no:
         return _physio_split_data()
     if DE_MONS == source_no:
@@ -59,6 +85,16 @@ def _choose_data(source_no):
 
 
 def __case(source_no, features_callbacks, window, model_config=default_model_config):
+    """
+    Research program main flow, which allows fast preparing test cases
+
+    :param source_no: number which represent source with data, available PHYSIO = 0 DE_MONS = 1
+    :param features_callbacks: list of callbacks to methods which calculates features
+    :param window: signals are split to many segments which contains same number of samples, this number is equal window
+    :param model_config: data with information about used structure of Artificial Neural Network
+    :return: result, its a dictionary with data collected during method call, dictionary contains
+        source_no, features_callbacks, window,model_config, trained, tested, training_time, testing_time, evaluates
+    """
     # start time
     registered_time = u_timer.get_time()
     # create directories
@@ -91,16 +127,17 @@ def __case(source_no, features_callbacks, window, model_config=default_model_con
     # testing part - calculate features + evaluate model
     stop_training_time = time.time()
     print("EVALUATING")
-    evaluates = []
+    evaluates, diagnostics = [], []
     ctr = 0
     start_testing_time = time.time()
     for data_set in data.examinations_data_set(
             test_signals, test_hypnogram, features_callbacks, window, False, registered_time
     ):
         f_test, l_test = data.split(data_set)
-        evaluate, predictions_arr = cls.evaluate2(f_test, l_test, model_config.output_amount)
+        evaluate, diagnostic, predictions_arr = cls.evaluate2(f_test, l_test, model_config.output_amount)
         # print(evaluate)
         evaluates.append(evaluate)
+        diagnostics.append(diagnostic)
         file_m.save(PREDICTIONS_FILE_DIR.format(registered_time, test_signals[ctr][0:-4]), [predictions_arr])
         ctr = ctr + 1
     stop_testing_time = time.time()
@@ -111,11 +148,26 @@ def __case(source_no, features_callbacks, window, model_config=default_model_con
     for ev in evaluates:
         cm = np.asarray(ev['matrix'])
         fig.save_to_file_confusion_matrix(cm, ['AWAKE', 'REM', 'NREM'],
-                                          PLOT_IMAGE_FILE_DIR.format(registered_time, eval_ctr), normalize=False).clf()
+                                          PLOT_IMAGE_FILE_DIR.format(registered_time, eval_ctr, test_signals[eval_ctr]),
+                                          normalize=False).clf()
         fig.save_to_file_confusion_matrix(cm, ['AWAKE', 'REM', 'NREM'],
-                                          NORMALIZED_PLOT_IMAGE_FILE_DIR.format(registered_time, eval_ctr),
+                                          NORMALIZED_PLOT_IMAGE_FILE_DIR.format(registered_time, eval_ctr,
+                                                                                test_signals[eval_ctr]),
                                           normalize=True).clf()
         eval_ctr = eval_ctr + 1
+
+    total_tp, total_tn, total_fn, total_fp = 0, 0, 0, 0
+    for diag in diagnostics:
+        total_tp = total_tp + diag['true_positive']
+        total_tn = total_tn + diag['true_negative']
+        total_fn = total_fn + diag['false_negative']
+        total_fp = total_fp + diag['false_positive']
+
+    total_accuracy = dr.accuracy(total_tp, total_fp, total_fn, total_tn)
+    total_sensitivity = dr.sensitivity(total_tp, total_fn)
+    total_specificity = dr.specificity(total_fp, total_tn)
+    total_ppv = dr.positive_predictive_value(total_tp, total_fp)
+    total_npv = dr.negative_predictive_value(total_fn, total_tn)
     result = {
         'source_no': source_no,
         'features_callbacks': features_callbacks,
@@ -125,8 +177,17 @@ def __case(source_no, features_callbacks, window, model_config=default_model_con
         'tested': len(evaluates),
         'training_time': stop_training_time - start_training_time,
         'testing_time': stop_testing_time - start_testing_time,
+        'total_diagnostic': {
+            'total_accuracy': total_accuracy,
+            'total_sensitivity': total_sensitivity,
+            'total_specificity': total_specificity,
+            'total_ppv': total_ppv,
+            'total_npv': total_npv
+        },
+        'diagnostic': diagnostics,
         'evaluates': evaluates
     }
+    # save results to file
     file_m.save(RESULT_FILE_DIR.format(registered_time), result.items())
     return result
 
@@ -386,3 +447,155 @@ def case_pyeeg_18():
     ]
     window = 100
     return __case(source_no=PHYSIO, features_callbacks=features_callbacks, window=window, model_config=model_config)
+
+
+# --------------------------------------------------------------
+
+@timer
+def basic_time_test_de_mons(callback):
+    model_config = ANNModelConfig()
+    features_callbacks = [
+        [
+            callback
+
+        ],
+        [
+        ]
+    ]
+    window = 200
+    return __case(source_no=DE_MONS, features_callbacks=features_callbacks, window=window, model_config=model_config)
+
+
+def basic_time_test_de_mons_0():
+    """EEG: root_mean_squere"""
+    return basic_time_test_de_mons(features.root_mean_square)
+
+
+def basic_time_test_de_mons_1():
+    """EEG: max_peak"""
+    return basic_time_test_de_mons(features.max_peak)
+
+
+def basic_time_test_de_mons_2():
+    """EEG: min_peak"""
+    return basic_time_test_de_mons(features.min_peak)
+
+
+def basic_time_test_de_mons_3():
+    """EEG: mean"""
+    return basic_time_test_de_mons(features.mean)
+
+
+def basic_time_test_de_mons_4():
+    """EEG: harmonic_mean"""
+    return basic_time_test_de_mons(features.harmonic_mean)
+
+
+def basic_time_test_de_mons_5():
+    """EEG: variance"""
+    return basic_time_test_de_mons(features.variance)
+
+
+def basic_time_test_de_mons_6():
+    """EEG: variation"""
+    return basic_time_test_de_mons(features.variation)
+
+
+def basic_time_test_de_mons_7():
+    """EEG: spectrogram"""
+    return basic_time_test_de_mons(features.spectrogram)
+
+
+def basic_time_test_de_mons_8():
+    """EEG: median"""
+    return basic_time_test_de_mons(features.median)
+
+
+def basic_time_test_de_mons_9():
+    """EEG: energy"""
+    return basic_time_test_de_mons(features.energy)
+
+
+def basic_time_test_de_mons_10():
+    """EEG: alpha_energy"""
+    return basic_time_test_de_mons(features.alpha_energy)
+
+
+def basic_time_test_de_mons_11():
+    """EEG: beta_energy"""
+    return basic_time_test_de_mons(features.beta_energy)
+
+
+def basic_time_test_de_mons_12():
+    """EEG: theta_energy"""
+    return basic_time_test_de_mons(features.theta_energy)
+
+
+def basic_time_test_de_mons_13():
+    """EEG: delta_energy"""
+    return basic_time_test_de_mons(features.delta_energy)
+
+
+def basic_time_test_de_mons_14():
+    """EEG: alpha_energy_ratio"""
+    return basic_time_test_de_mons(features.alpha_energy_ratio)
+
+
+def basic_time_test_de_mons_15():
+    """EEG: beta_energy_ratio"""
+    return basic_time_test_de_mons(features.beta_energy_ratio)
+
+
+def basic_time_test_de_mons_16():
+    """EEG: theta_energy_ratio"""
+    return basic_time_test_de_mons(features.theta_energy_ratio)
+
+
+def basic_time_test_de_mons_17():
+    """EEG: delta_energy_ratio"""
+    return basic_time_test_de_mons(features.delta_energy_ratio)
+
+
+def basic_time_test_de_mons_18():
+    """EEG: sig_pow"""
+    return basic_time_test_de_mons(features.sig_pow)
+
+
+def basic_time_test_de_mons_19():
+    """EEG: sig_pow_sk"""
+    return basic_time_test_de_mons(features.sig_pow_sk)
+
+
+def basic_time_test_de_mons_20():
+    """EEG: alpha_fft_energy"""
+    return basic_time_test_de_mons(features.alpha_fft_energy)
+
+
+def basic_time_test_de_mons_21():
+    """EEG: beta_fft_energy"""
+    return basic_time_test_de_mons(features.beta_fft_energy)
+
+
+def basic_time_test_de_mons_22():
+    """EEG: theta_fft_energy"""
+    return basic_time_test_de_mons(features.theta_fft_energy)
+
+
+def basic_time_test_de_mons_23():
+    """EEG: alpha_fft_energy_ratio"""
+    return basic_time_test_de_mons(features.alpha_fft_energy_ratio)
+
+
+def basic_time_test_de_mons_24():
+    """EEG: beta_fft_energy_ratio"""
+    return basic_time_test_de_mons(features.beta_fft_energy_ratio)
+
+
+def basic_time_test_de_mons_25():
+    """EEG: theta_fft_energy_ratio"""
+    return basic_time_test_de_mons(features.theta_fft_energy_ratio)
+
+
+def basic_time_test_de_mons_26():
+    """EEG: delta_fft_energy_ratio"""
+    return basic_time_test_de_mons(features.delta_fft_energy_ratio)
