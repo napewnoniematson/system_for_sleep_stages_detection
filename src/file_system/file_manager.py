@@ -12,3 +12,8 @@ def load(path, return_int=False):
     with open(path + '.csv', 'r') as csv_file:
         reader = csv.reader(csv_file, delimiter=',', lineterminator='\r\n')
         return [[int(i) for i in r] for r in reader] if return_int else [r for r in reader]
+
+
+def save_json(path, json):
+    with open(path + '.json', 'w') as f:
+        f.write(json)

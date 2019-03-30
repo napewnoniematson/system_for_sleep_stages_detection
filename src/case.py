@@ -599,3 +599,325 @@ def basic_time_test_de_mons_25():
 def basic_time_test_de_mons_26():
     """EEG: delta_fft_energy_ratio"""
     return basic_time_test_de_mons(features.delta_fft_energy_ratio)
+
+
+def basic_time_test_de_mons_27():
+    """EEG: spectrogram2_energy"""
+    return basic_time_test_de_mons(features.spectrogram2_energy)
+
+
+def basic_time_test_de_mons_28():
+    """EEG: spectrogram2_sig_pow"""
+    return basic_time_test_de_mons(features.spectrogram2_sig_pow)
+
+
+def basic_time_test_de_mons_29():
+    """EEG: spectrogram2_sig_pow_sk"""
+    return basic_time_test_de_mons(features.spectrogram2_sig_pow_sk)
+
+
+# PYEEG
+def basic_time_test_de_mons_30():
+    """EEG: power_delta"""
+    return basic_time_test_de_mons(pyeeg_features.power_delta)
+
+
+def basic_time_test_de_mons_31():
+    """EEG: power_theta"""
+    return basic_time_test_de_mons(pyeeg_features.power_theta)
+
+
+def basic_time_test_de_mons_32():
+    """EEG: power_beta"""
+    return basic_time_test_de_mons(pyeeg_features.power_beta)
+
+
+def basic_time_test_de_mons_33():
+    """EEG: power_alpha"""
+    return basic_time_test_de_mons(pyeeg_features.power_alpha)
+
+
+def basic_time_test_de_mons_34():
+    """EEG: power_delta_ratio"""
+    return basic_time_test_de_mons(pyeeg_features.power_delta_ratio)
+
+
+def basic_time_test_de_mons_35():
+    """EEG: power_theta_ratio"""
+    return basic_time_test_de_mons(pyeeg_features.power_theta_ratio)
+
+
+def basic_time_test_de_mons_36():
+    """EEG: power_beta_ratio"""
+    return basic_time_test_de_mons(pyeeg_features.power_beta_ratio)
+
+
+def basic_time_test_de_mons_37():
+    """EEG: power_alpha_ratio"""
+    return basic_time_test_de_mons(pyeeg_features.power_alpha_ratio)
+
+
+def basic_time_test_de_mons_38():
+    """EEG: hjorth_mobility"""
+    return basic_time_test_de_mons(pyeeg_features.hjorth_mobility)
+
+
+def basic_time_test_de_mons_39():
+    """EEG: hjorth_complexity"""
+    return basic_time_test_de_mons(pyeeg_features.hjorth_complexity)
+
+
+def basic_time_test_de_mons_40():
+    """EEG: petrosian_fractal_dimension"""
+    return basic_time_test_de_mons(pyeeg_features.petrosian_fractal_dimension)
+
+
+def basic_time_test_de_mons_41():
+    """EEG: fisher_info"""
+    return basic_time_test_de_mons(pyeeg_features.fisher_info)
+
+
+def basic_time_test_de_mons_42():
+    """EEG: permutation_entropy"""
+    return basic_time_test_de_mons(pyeeg_features.permutation_entropy)
+
+
+def basic_time_test_de_mons_43():
+    """EEG: svd_entropy"""
+    return basic_time_test_de_mons(pyeeg_features.svd_entropy)
+
+
+@timer
+def basic_time_test_physio(callback):
+    model_config = ANNModelConfig()
+    features_callbacks = [
+        [
+            callback
+
+        ],
+        [
+        ]
+    ]
+    window = 200
+    return __case(source_no=PHYSIO, features_callbacks=features_callbacks, window=window, model_config=model_config)
+
+
+def basic_time_test_physio_0():
+    """EEG: root_mean_square"""
+    return basic_time_test_physio(features.root_mean_square)
+
+
+def basic_time_test_physio_1():
+    """EEG: max_peak"""
+    return basic_time_test_physio(features.max_peak)
+
+
+def basic_time_test_physio_2():
+    """EEG: min_peak"""
+    return basic_time_test_physio(features.min_peak)
+
+
+def basic_time_test_physio_3():
+    """EEG: mean"""
+    return basic_time_test_physio(features.mean)
+
+
+def basic_time_test_physio_4():
+    """EEG: harmonic_mean"""
+    return basic_time_test_physio(features.harmonic_mean)
+
+
+def basic_time_test_physio_5():
+    """EEG: variance"""
+    return basic_time_test_physio(features.variance)
+
+
+def basic_time_test_physio_6():
+    """EEG: variation"""
+    return basic_time_test_physio(features.variation)
+
+
+def basic_time_test_physio_7():
+    """EEG: spectrogram"""
+    return basic_time_test_physio(features.spectrogram)
+
+
+def basic_time_test_physio_8():
+    """EEG: median"""
+    return basic_time_test_physio(features.median)
+
+
+def basic_time_test_physio_9():
+    """EEG: energy"""
+    return basic_time_test_physio(features.energy)
+
+
+def basic_time_test_physio_10():
+    """EEG: alpha_energy"""
+    return basic_time_test_physio(features.alpha_energy)
+
+
+def basic_time_test_physio_11():
+    """EEG: beta_energy"""
+    return basic_time_test_physio(features.beta_energy)
+
+
+def basic_time_test_physio_12():
+    """EEG: theta_energy"""
+    return basic_time_test_physio(features.theta_energy)
+
+
+def basic_time_test_physio_13():
+    """EEG: delta_energy"""
+    return basic_time_test_physio(features.delta_energy)
+
+
+def basic_time_test_physio_14():
+    """EEG: alpha_energy_ratio"""
+    return basic_time_test_physio(features.alpha_energy_ratio)
+
+
+def basic_time_test_physio_15():
+    """EEG: beta_energy_ratio"""
+    return basic_time_test_physio(features.beta_energy_ratio)
+
+
+def basic_time_test_physio_16():
+    """EEG: theta_energy_ratio"""
+    return basic_time_test_physio(features.theta_energy_ratio)
+
+
+def basic_time_test_physio_17():
+    """EEG: delta_energy_ratio"""
+    return basic_time_test_physio(features.delta_energy_ratio)
+
+
+def basic_time_test_physio_18():
+    """EEG: sig_pow"""
+    return basic_time_test_physio(features.sig_pow)
+
+
+def basic_time_test_physio_19():
+    """EEG: sig_pow_sk"""
+    return basic_time_test_physio(features.sig_pow_sk)
+
+
+def basic_time_test_physio_20():
+    """EEG: alpha_fft_energy"""
+    return basic_time_test_physio(features.alpha_fft_energy)
+
+
+def basic_time_test_physio_21():
+    """EEG: beta_fft_energy"""
+    return basic_time_test_physio(features.beta_fft_energy)
+
+
+def basic_time_test_physio_22():
+    """EEG: theta_fft_energy"""
+    return basic_time_test_physio(features.theta_fft_energy)
+
+
+def basic_time_test_physio_23():
+    """EEG: alpha_fft_energy_ratio"""
+    return basic_time_test_physio(features.alpha_fft_energy_ratio)
+
+
+def basic_time_test_physio_24():
+    """EEG: beta_fft_energy_ratio"""
+    return basic_time_test_physio(features.beta_fft_energy_ratio)
+
+
+def basic_time_test_physio_25():
+    """EEG: theta_fft_energy_ratio"""
+    return basic_time_test_physio(features.theta_fft_energy_ratio)
+
+
+def basic_time_test_physio_26():
+    """EEG: delta_fft_energy_ratio"""
+    return basic_time_test_physio(features.delta_fft_energy_ratio)
+
+
+def basic_time_test_physio_27():
+    """EEG: spectrogram2_energy"""
+    return basic_time_test_physio(features.spectrogram2_energy)
+
+
+def basic_time_test_physio_28():
+    """EEG: spectrogram2_sig_pow"""
+    return basic_time_test_physio(features.spectrogram2_sig_pow)
+
+
+def basic_time_test_physio_29():
+    """EEG: spectrogram2_sig_pow_sk"""
+    return basic_time_test_physio(features.spectrogram2_sig_pow_sk)
+
+
+# PYEGG
+def basic_time_test_physio_30():
+    """EEG: power_delta"""
+    return basic_time_test_physio(pyeeg_features.power_delta)
+
+
+def basic_time_test_physio_31():
+    """EEG: power_theta"""
+    return basic_time_test_physio(pyeeg_features.power_theta)
+
+
+def basic_time_test_physio_32():
+    """EEG: power_beta"""
+    return basic_time_test_physio(pyeeg_features.power_beta)
+
+
+def basic_time_test_physio_33():
+    """EEG: power_alpha"""
+    return basic_time_test_physio(pyeeg_features.power_alpha)
+
+
+def basic_time_test_physio_34():
+    """EEG: power_delta_ratio"""
+    return basic_time_test_physio(pyeeg_features.power_delta_ratio)
+
+
+def basic_time_test_physio_35():
+    """EEG: power_theta_ratio"""
+    return basic_time_test_physio(pyeeg_features.power_theta_ratio)
+
+
+def basic_time_test_physio_36():
+    """EEG: power_beta_ratio"""
+    return basic_time_test_physio(pyeeg_features.power_beta_ratio)
+
+
+def basic_time_test_physio_37():
+    """EEG: power_alpha_ratio"""
+    return basic_time_test_physio(pyeeg_features.power_alpha_ratio)
+
+
+def basic_time_test_physio_38():
+    """EEG: hjorth_mobility"""
+    return basic_time_test_physio(pyeeg_features.hjorth_mobility)
+
+
+def basic_time_test_physio_39():
+    """EEG: hjorth_complexity"""
+    return basic_time_test_physio(pyeeg_features.hjorth_complexity)
+
+
+def basic_time_test_physio_40():
+    """EEG: petrosian_fractal_dimension"""
+    return basic_time_test_physio(pyeeg_features.petrosian_fractal_dimension)
+
+
+def basic_time_test_physio_41():
+    """EEG: fisher_info"""
+    return basic_time_test_physio(pyeeg_features.fisher_info)
+
+
+def basic_time_test_physio_42():
+    """EEG: permutation_entropy"""
+    return basic_time_test_physio(pyeeg_features.permutation_entropy)
+
+
+def basic_time_test_physio_43():
+    """EEG: svd_entropy"""
+    return basic_time_test_physio(pyeeg_features.svd_entropy)

@@ -1,4 +1,5 @@
 import math
+import numpy as np
 import statistics as stat
 import scipy.stats as sci_stat
 import scipy.signal as signal
@@ -42,11 +43,24 @@ def variation(samples, **kwargs):
 
 
 def spectrogram(samples, **kwargs):
+    """
+    ValueError:
+    Error when checking input: expected flatten_1_input to have 2 dimensions, but got array with shape (30520, 1, 3)
+
+    :param samples:
+    :param kwargs:
+    :return:
+    """
     try:
         sampling_freq = kwargs[SAMPLING_FREQ]
     except KeyError:
         sampling_freq = SAMPLING_FREQ_DEFAULT
         return signal.spectrogram(samples, fs=sampling_freq)
+
+
+def spectrogram2(samples, **kwargs):
+    spec = spectrogram(samples, **kwargs)[2]
+    return [i[0] for i in spec]
 
 
 def median(samples, **kwargs):
@@ -57,6 +71,11 @@ def energy(samples, **kwargs):
     # powered_abs = [abs(s) for s in samples.copy()]  # publication
     powered_abs = [abs(s) ** 2 for s in samples.copy()]  # internet
     return sum(powered_abs)
+
+
+def spectrogram2_energy(samples, **kwargs):
+    spec = spectrogram2(samples, **kwargs)
+    return energy(spec, **kwargs)
 
 
 def alpha_energy(samples, **kwargs):
@@ -108,6 +127,16 @@ def sig_pow_sk(samples, **kwargs):
     return sig_pow(samples) ** 0.5
 
 
+def spectrogram2_sig_pow(samples, **kwargs):
+    spec = spectrogram2(samples, **kwargs)
+    return sig_pow(spec, **kwargs)
+
+
+def spectrogram2_sig_pow_sk(samples, **kwargs):
+    spec = spectrogram2(samples, **kwargs)
+    return sig_pow_sk(spec, **kwargs)
+
+
 def entropy(samples, **kwargs):
     x = [s ** 2 * math.log(s ** 2) for s in samples]  # publication
     # x = [s * math.log(s) for s in samples]  # internet
@@ -126,7 +155,7 @@ def _value_of_complexes(cxs):
 
 def _fft(samples):
     # return fft_pack.fft(samples)[1:len(samples) // 2] # maybe half of fft is enough
-    return fft_pack.fft(samples)
+    return fft_pack.fft(samples.copy())
 
 
 def _fft_window(samples):
@@ -135,7 +164,7 @@ def _fft_window(samples):
 
 
 def _fft_energy(samples, **kwargs):
-    f = fft_pack.fft(samples)
+    f = fft_pack.fft(samples.copy())
     # f = fft_pack.rfft(samples)  # maybe rfft is better
     # vc = _value_of_complexes(f)
     return energy(f)
