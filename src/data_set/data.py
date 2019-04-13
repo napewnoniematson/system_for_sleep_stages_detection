@@ -81,7 +81,7 @@ def _calculate_data_set_for_examination(examination, features_callbacks, window=
                 features.append(
                     call(signal[i:i + window], **kwargs)
                 )
-        print(features)
+        # print(features)
         # accumulate calculated features
         calculated_features.append(features)
     return calculated_features

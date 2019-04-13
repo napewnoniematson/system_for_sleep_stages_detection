@@ -84,6 +84,105 @@ def _choose_data(source_no):
     return [], [], [], []
 
 
+def e_case():
+    """
+    case with existing calculated features
+    :return:
+    """
+    # PATHS
+    main_path = '/home/pc/mgr/features/badania_sig_norm_demons_physio/physio/'
+    features_folder_path = main_path + '{}/'
+    training_folder_path = features_folder_path + 'training/'
+    testing_folder_path = features_folder_path + 'test/'
+
+    # FEATURES FOLDERS
+    features_folders = sorted(os.listdir(main_path))
+    features_folders = [
+        features_folders[2],  # beta_energy
+        # features_folders[10],  # max peak
+        # features_folders[13],  # min peak
+        # features_folders[14],  # petrosian_fractal_dimension
+        # features_folders[23],  # root mean square
+        # features_folders[24],  # sig_pow
+        features_folders[25],  # sig_pow_sk
+        # features_folders[26],  # spectrogram2_energy
+        # features_folders[31],  # theta_fft_energy
+        # features_folders[32]  # variance
+    ]
+
+    # READ TRAINING FEATURES
+    training_features = []
+    for ff in features_folders:
+        fp = training_folder_path.format(ff)
+        temp = []
+        for file in os.listdir(fp):
+            with open(fp + file, 'r') as f:
+                temp.extend(f.readlines())
+        training_features.append(temp)
+    hypnogram0 = np.asarray([int(f[0]) for f in training_features[0]])
+    training_features = np.asarray([[float(f[2:-2]) for f in feature] for feature in training_features])
+
+    # NORMALIZE TRAINING FEATURES
+    # mins, maxes = [], []
+    # for i in range(len(features_folders)):
+    #     mins.append(training_features[i].min())
+    #     maxes.append(training_features[i].max())
+    #     training_features[i] = (training_features[i] - mins[i]) / (maxes[i] - mins[i])
+
+    training_features = training_features.transpose()
+
+
+    # READ TEST FEATURES
+    fp = testing_folder_path.format(features_folders[0])
+    for file in os.listdir(fp):
+        test_features = []
+        for ff in features_folders:
+            fp = testing_folder_path.format(ff)
+            with open(fp + file, 'r') as f:
+                test_features.append(f.readlines())
+        hypnogram1 = np.asarray([int(f[0]) for f in test_features[0]])
+        test_features = np.asarray([[float(f[2:-2]) for f in feature] for feature in test_features])
+        test_features = test_features.transpose()
+        print(test_features)
+        exit(-1)
+
+
+
+    # # READ TEST FEATURES
+    # test_features = []
+    # for ff in features_folders:
+    #     fp = testing_folder_path.format(ff)
+    #     temp = []
+    #     for file in os.listdir(fp):
+    #         with open(fp + file, 'r') as f:
+    #             temp.extend(f.readlines())
+    #     test_features.append(temp)
+    #
+    # hypnogram1 = np.asarray([int(f[0]) for f in test_features[0]])
+    # test_features = np.asarray([[float(f[2:-2]) for f in feature] for feature in test_features])
+
+    # for i in range(len(features_folders)):
+    #     test_features[i] = (test_features[i] - mins[i]) / (maxes[i] - mins[i])
+
+    # test_features = test_features.transpose()
+
+
+    # model_config = default_model_config
+    # input_amount = len(training_features[0])
+    # model_config.input_amount = input_amount
+    # model = ann_m.Model(model_config)
+    # model.train(training_features, hypnogram0)
+    # cls = ann_c.Classifier(model)
+
+    # evaluate, diagnostic, predictions_arr = cls.evaluate2(test_features, hypnogram1, model_config.output_amount)
+    # print(evaluate)
+    # cm = np.asarray(evaluate['matrix'])
+    # fig.show_confusion_matrix(cm, ['AWAKE', 'REM', 'NREM'], normalize=False).clf()
+    # fig.show_confusion_matrix(cm, ['AWAKE', 'REM', 'NREM'], normalize=True).clf()
+    # print(diagnostic)
+    # print(predictions_arr)
+
+
 def __case(source_no, features_callbacks, window, model_config=default_model_config):
     """
     Research program main flow, which allows fast preparing test cases
@@ -110,7 +209,6 @@ def __case(source_no, features_callbacks, window, model_config=default_model_con
         input_amount += len(callback)
     model_config.input_amount = input_amount
     # prepare model
-    print(model_config)
     model = ann_m.Model(model_config)
     # prepare classifier
     cls = ann_c.Classifier(model)
@@ -424,14 +522,15 @@ def case_pyeeg_17():
     features_callbacks = [
         [
             # features.variance, features.root_mean_square, features.median, pyeeg_features.petrosian_fractal_dimension
-            pyeeg_features.petrosian_fractal_dimension, features.root_mean_square, features.variance
+            pyeeg_features.petrosian_fractal_dimension, features.root_mean_square, features.spectrogram2_sig_pow,
+            pyeeg_features.hjorth_mobility
 
         ],
         [
-            # features.median#, features.root_mean_square, features.variance, pyeeg_features.petrosian_fractal_dimension
+            features.root_mean_square, features.spectrogram2_sig_pow
         ]
     ]
-    window = 200
+    window = 100
     return __case(source_no=PHYSIO, features_callbacks=features_callbacks, window=window, model_config=model_config)
 
 

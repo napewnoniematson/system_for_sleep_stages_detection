@@ -58,7 +58,10 @@ def demo_save():
 if __name__ == '__main__':
     logger.info(START_APP)
     # demo_show()
-    print(test_case.basic_time_test_physio_43())
+    # print(test_case.case_pyeeg_17())
+    # print(test_case.basic_time_test_de_mons_0())
+    print(test_case.e_case())
+
 
     # MY FEATURES
     # basic_time_test_de_mons_0: 143.72357511520386
