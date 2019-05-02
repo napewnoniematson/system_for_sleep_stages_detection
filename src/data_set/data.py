@@ -59,7 +59,7 @@ def _calculate_data_set_for_examination(examination, features_callbacks, window=
         examination.psg.load_eog()
     ]
     # signal normalization if needed
-    signals = _normalize_signals(signals, normalized)
+    signals = _normalize_signals(signals, normalized=False)
     # sequence of classes registered by expert
     hypnogram = examination.hypnogram
     # check correctness of signals lengths
