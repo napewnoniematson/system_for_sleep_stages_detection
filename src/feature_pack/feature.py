@@ -43,7 +43,7 @@ def variation(samples, **kwargs):
 
 
 def spectrogram(samples, **kwargs):
-    """
+    """F
     ValueError:
     Error when checking input: expected flatten_1_input to have 2 dimensions, but got array with shape (30520, 1, 3)
 

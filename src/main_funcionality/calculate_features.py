@@ -114,8 +114,8 @@ def calculate_ratio():
 
 
 def calculate_500_physio(features_callbacks):
-    window = 500
-    return calculate(source_no=DE_MONS, features_callbacks=features_callbacks, window=window)
+    window = 200
+    return calculate(source_no=PHYSIO, features_callbacks=features_callbacks, window=window)
 
 
 def calculate_500_physio_0():

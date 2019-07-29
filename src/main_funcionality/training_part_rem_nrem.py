@@ -9,8 +9,8 @@ from src.file_system.directory_manager import *
 from src.model.ann_model_config import ANNModelConfig
 
 default_model_config = ANNModelConfig()
-main_path = '/home/pc/mgr/features/features_eeg_non_normalized/window_500/physio_window_500/'
-norm = False
+main_path = '/home/pc/mgr/features/features_eog_non_normalized/window_200/physio_window_200/'
+norm = True
 
 
 def training(a):

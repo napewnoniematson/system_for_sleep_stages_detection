@@ -67,8 +67,7 @@ if __name__ == '__main__':
     logger.info(START_APP)
     import time
     s0 = time.time()
-    for i in range(44):
-        test_case.run(a=i)
+    test_case.run(a=0)
     sound_alert()
     s1 = time.time()
     print("TIME: ", s1 - s0)
