@@ -1,5 +1,5 @@
 import src.utils.timer as u_timer
-import src.loader.physionet_sleep_cassette.titles as titles
+import src.loader.titles as titles
 import src.feature_pack.feature as features
 import src.feature_pack.pyegg_features as pyeeg_features
 import src.data_set.data as data

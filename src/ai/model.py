@@ -8,9 +8,6 @@ class Model:
         self.__make()
         self.__compile()
 
-    def __normalize(self):
-        self.features = tf.keras.utils.normalize(self.features, axis=1)
-
     def __make(self):
         input_shape = (self.model_config.input_amount,)
         class_amount = self.model_config.output_amount  # AWAKE, REM+STAGE1, STAGE2+STAGE3

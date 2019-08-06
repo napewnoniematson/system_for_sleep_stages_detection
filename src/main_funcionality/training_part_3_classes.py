@@ -1,10 +1,10 @@
 import numpy as np
-import src.figure as fig
+import src.utils.figure as fig
 import src.utils.timer as u_timer
-import src.ai.ann.model as ann_m
-import src.ai.ann.classifier as ann_c
+import src.ai.model as ann_m
+import src.ai.classifier as ann_c
 import src.file_system.file_manager as file_m
-import src.diagnostic_reliability as dr
+import src.utils.diagnostic_reliability as dr
 from src.file_system.directory_manager import *
 from src.model.ann_model_config import ANNModelConfig
 

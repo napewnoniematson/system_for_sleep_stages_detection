@@ -3,16 +3,16 @@ import time
 import numpy as np
 
 from src.decorator.timer import timer
-import src.figure as fig
+import src.utils.figure as fig
 import src.utils.timer as u_timer
-import src.loader.physionet_sleep_cassette.titles as titles
+import src.loader.titles as titles
 import src.feature_pack.feature as features
 import src.feature_pack.pyegg_features as pyeeg_features
-import src.ai.ann.model as ann_m
-import src.ai.ann.classifier as ann_c
+import src.ai.model as ann_m
+import src.ai.classifier as ann_c
 import src.data_set.data as data
 import src.file_system.file_manager as file_m
-import src.diagnostic_reliability as dr
+import src.utils.diagnostic_reliability as dr
 from src.file_system.directory_manager import *
 from src.model.ann_model_config import ANNModelConfig
 

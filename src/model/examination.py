@@ -1,7 +1,7 @@
 from src.loader.physionet_sleep_cassette.rk import RK as p_RK
 from src.loader.physionet_sleep_cassette.psg import PSG as p_PSG
-from src.loader.unversite_de_mons.rk import RK as u_RK
-from src.loader.unversite_de_mons.psg import PSG as u_PSG
+from src.loader.universite_de_mons.rk import RK as u_RK
+from src.loader.universite_de_mons.psg import PSG as u_PSG
 from src.utils.util import *
 
 
