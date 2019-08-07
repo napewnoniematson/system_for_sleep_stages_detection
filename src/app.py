@@ -1,5 +1,3 @@
-from src.logger.messages import *
-import src.logger.logger as logger
 import src.case as test_case
 
 
@@ -64,18 +62,10 @@ def sound_alert():
 
 
 if __name__ == '__main__':
-    logger.info(START_APP)
     import time
+
     s0 = time.time()
     test_case.run(a=0)
     sound_alert()
     s1 = time.time()
     print("TIME: ", s1 - s0)
-
-
-
-
-
-
-
-

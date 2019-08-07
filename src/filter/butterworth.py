@@ -1,13 +1,10 @@
 from scipy.signal import butter, lfilter
 
-import src.logger.logger as logger
-from src.logger.messages import *
-
 
 def butter_bandpass(low_cut, high_cut, fs, order=5):
-    nyq = 0.5*fs  # Nyquist
-    low = low_cut/nyq
-    high = high_cut/nyq
+    nyq = 0.5 * fs  # Nyquist
+    low = low_cut / nyq
+    high = high_cut / nyq
     b, a = butter(order, [low, high], btype='band')
     return b, a
 

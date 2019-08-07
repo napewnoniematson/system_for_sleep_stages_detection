@@ -2,9 +2,6 @@ import numpy as np
 import pyedflib
 
 from src.utils.util import *
-from src.logger.messages import *
-import src.logger.logger as logger
-
 
 # ***********************LOAD_EDF************************
 # ECG
@@ -60,27 +57,28 @@ class PSG:
 
     @staticmethod
     def __load_edf_data(path):
-        logger.info(EEG_LOAD_START_INFO)
         edf = None
         try:
             edf = pyedflib.EdfReader(path)
-            logger.info(EEG_LOAD_END_INFO)
         except OSError:
-            logger.error(EEG_LOAD_ERROR)
+            print('psg load err')
         return edf
 
+    def load_eeg(self):
+        return self.__load_fp2_a1()
+
+    def load_eog(self):
+        return self.__load_eog1_a2()
+
     def __load_signals(self):
-        logger.info(EEG_SIGNAL_SELECTION_START_INFO)
         channels_no = self.__get_channels_no()
         if self.__edf:
             samples = np.zeros((len(channels_no), self.__load_samples_amount()))
             for i in range(len(channels_no)):
                 sample_no = channels_no[i]
                 samples[i, :] = self.__edf.readSignal(sample_no)
-            logger.info(EEG_SIGNAL_SELECTION_END_INFO)
         else:
             samples = [[] for _ in channels_no]
-            logger.warning(EEG_SIGNAL_SELECTION_END_WARNING)
         return samples
 
     @staticmethod
@@ -118,9 +116,3 @@ class PSG:
 
     def __load_samples_amount(self):
         return self.__edf.getNSamples()[EEG_FPI_A2_NO]
-
-    def load_eeg(self):
-        return self.__load_fp2_a1()
-
-    def load_eog(self):
-        return self.__load_eog1_a2()

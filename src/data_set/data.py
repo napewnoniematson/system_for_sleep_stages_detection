@@ -41,8 +41,7 @@ def examinations_data_set(signal_titles, hypnogram_titles, features_callbacks, w
             yield data_set
 
 
-def _calculate_data_set_for_examination(examination, features_callbacks, window=WINDOW_DEFAULT,
-                                        normalized=True, **kwargs):
+def _calculate_data_set_for_examination(examination, features_callbacks, window=WINDOW_DEFAULT, **kwargs):
     """
     Function calculates features for one examination
 
@@ -58,8 +57,6 @@ def _calculate_data_set_for_examination(examination, features_callbacks, window=
         examination.psg.load_eeg(),
         examination.psg.load_eog()
     ]
-    # signal normalization if needed
-    signals = _normalize_signals(signals, normalized=False)
     # sequence of classes registered by expert
     hypnogram = examination.hypnogram
     # check correctness of signals lengths
@@ -81,7 +78,6 @@ def _calculate_data_set_for_examination(examination, features_callbacks, window=
                 features.append(
                     call(signal[i:i + window], **kwargs)
                 )
-        # print(features)
         # accumulate calculated features
         calculated_features.append(features)
     return calculated_features
@@ -103,18 +99,6 @@ def _check_correctness(signals, hypnogram, features_callbacks):
         if len(s) != len(hypnogram):
             return False
     return True
-
-
-def _normalize_signals(signals, normalized=True):
-    """
-    Signal normalization: value is decreased by minimum value, and then difference is divided by peak to peak
-    value (maximum - minimum). Mentioned calculation is repeated for every sample
-
-    :param signals: list of sample
-    :param normalized: flag, if true then signal will be normalized
-    :return: list of normalized samples
-    """
-    return [(signal - min(signal) / signal.ptp()) for signal in signals] if normalized else signals
 
 
 def _has_unknown(hypnogram):
