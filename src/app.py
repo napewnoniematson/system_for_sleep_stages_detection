@@ -2,7 +2,7 @@ import src.case as test_case
 
 
 def demo_show():
-    import src.utils.figure as f
+    import src.utils.cm_graph as f
     import numpy as np
 
     a1 = [[28810, 966, 179], [188, 2195, 362], [1454, 1190, 4406]]
@@ -29,7 +29,7 @@ def demo_show():
 
 
 def demo_save():
-    import src.utils.figure as f
+    import src.utils.cm_graph as f
     import numpy as np
 
     a1 = [[28810, 966, 179], [188, 2195, 362], [1454, 1190, 4406]]

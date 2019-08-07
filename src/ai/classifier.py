@@ -1,5 +1,5 @@
 import numpy as np
-import src.utils.diagnostic_reliability as diagnostic
+import src.utils.cm_params as diagnostic
 
 
 class Classifier:
